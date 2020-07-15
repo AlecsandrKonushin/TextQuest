@@ -6,8 +6,8 @@ public class TapController : Singleton<TapController>
     public bool CanTap = true;
     private bool _timeCanTap = true;
     private float _timeBetweenTap = .1f;
-
-    private void Update()
+    
+    private void OnMouseDown()
     {
         if (MainController.Instance.CanTap && _timeCanTap && CanTap)
             if (Input.GetMouseButtonDown(0))

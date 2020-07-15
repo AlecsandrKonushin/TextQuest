@@ -9,8 +9,8 @@ public class Character : MonoBehaviour
     public Sprite SmileSprite;
     public Sprite HateSprite;
 
-    public Dictionary<string, int> Communications = new Dictionary<string, int>();
-
+    private Dictionary<string, int> Communications = new Dictionary<string, int>();
+    
     public Character(string name)
     {
         Name = name;
@@ -26,6 +26,9 @@ public class Character : MonoBehaviour
 
     public void ChangeCommunication(string characterName, int interaction)
     {
+        if (Communications == null)
+            Communications = new Dictionary<string, int>();
+
         if (Communications.Count !=0 && Communications.ContainsKey(characterName))
             Communications[characterName] += interaction;
         else

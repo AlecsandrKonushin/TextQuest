@@ -9,23 +9,29 @@ public class GameController : Singleton<GameController>
     private int _counterParts = 0;
 
     private bool _endScene;
+    public bool UiReady = true;
 
-    public Dictionary<string, bool> InfluenceForGame = new Dictionary<string, bool>();
+    private Dictionary<string, bool> InfluenceForGame = new Dictionary<string, bool>();
     private bool[] _narrativeFirstScene = new bool[6] { true, true, true, true, false, true };
+    private bool _nowNarrative = true;
 
     [SerializeField] private Character[] _characters;
     private Question[] _currentQuestions = null;
-    private Character _currentCharacter;
+    private Character _playingCharacter;
+    private string _prevSpeakingName;
     private PartGame _currentPart;
 
     private void Start()
     {
         _currentPart = DataTexts.FirstPart;
-        _currentCharacter = _characters[0];
+        _playingCharacter = _characters[0];
     }
 
     public void NextPoint()
     {
+        if (!UiReady)
+            return;
+
         if (_endScene)
         {
             GoToNextScene();
@@ -33,13 +39,16 @@ public class GameController : Singleton<GameController>
             return;
         }
 
+        _nowNarrative = _narrativeFirstScene[_counterParts];
+        UiReady = false;
+
         if (_narrativeFirstScene[_counterParts])
             SetNextNarrative();
         else
             SetNextQuestion();
 
         _counterParts++;
-        if (_counterParts > _narrativeFirstScene.Length)
+        if (_counterParts >= _narrativeFirstScene.Length)
             _endScene = true;
     }
 
@@ -48,10 +57,13 @@ public class GameController : Singleton<GameController>
         FrameNarrative frame = _currentPart.Narrative[_counterNarrative];
         SetNextTextAndSprite(frame);
         _counterNarrative++;
+        _prevSpeakingName = frame.Character.Name;
     }
 
     private void SetNextQuestion()
     {
+        UiController uiCon = UiController.Instance;
+        uiCon.HideQuestions();
         TapController.Instance.CanTap = false;
         FrameQuestion frame = _currentPart.Question[_counterQuestions];
         _currentQuestions = frame.Questions;
@@ -72,8 +84,11 @@ public class GameController : Singleton<GameController>
             }
         }
         nowCharacter.ChangeState(frame.StateCharacter);
-
-        UiController.Instance.ShowNarrativeText(frame.Text, nowCharacter);
+        
+        if (nowCharacter.Name == _prevSpeakingName)        
+            StartCoroutine(UiController.Instance.ChangeNarrativeText(frame.Text));        
+        else
+            UiController.Instance.ShowNarrativeText(frame.Text, nowCharacter);
     }
 
     private void SetNextQuestion(FrameQuestion frame)
@@ -101,10 +116,14 @@ public class GameController : Singleton<GameController>
 
     public void ChooseButton(int numberButton)
     {
+        if (!UiReady)
+            return;
+
         Question question = _currentQuestions[numberButton];
+
         if (question.InfluencedCharacterName != null)
         {
-            _currentCharacter.ChangeCommunication(
+            _playingCharacter.ChangeCommunication(
                 question.InfluencedCharacterName,
                 question.InfluenceForCharacter);
         }
@@ -114,7 +133,14 @@ public class GameController : Singleton<GameController>
             InfluenceForGame.Add(question.InfluenceForGame, question.ValueInfluenceForGame);
         }
 
+        foreach (var info in InfluenceForGame)
+        {
+            Debug.Log(info.Key + " " + info.Value);
+        }
+        UiController.Instance.HideQuestions();
         TapController.Instance.CanTap = true;
+
+        NextPoint();
     }
 }
 
