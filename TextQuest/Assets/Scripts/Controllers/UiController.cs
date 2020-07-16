@@ -13,6 +13,7 @@ public class UiController : Singleton<UiController>
     [Space]
     [Header("Основные элементы UI")]
     [SerializeField] private Text narrativeText;
+    [SerializeField] private GameObject bgCharacterName;
     [SerializeField] private Text characterNameText;
     [SerializeField] private Image characterImage;
     [SerializeField] private MyButton[] myButtoms;
@@ -30,15 +31,39 @@ public class UiController : Singleton<UiController>
         _animatorPanelNarrative = narrativePanel.GetComponent<Animator>();
     }
 
-    public void ShowNarrativeText(string text, Character character)
+    public void ShowNarrativeText(string text, Character character, bool mainCharacter)
     {
         narrativePanel.SetActive(false);
-        characterNameText.text = character.Name;
+        
         characterImage.sprite = character.Sprite;
+        characterNameText.text = character.Name;
         narrativeText.text = text;
-        narrativePanel.SetActive(true);
 
+        if (mainCharacter)
+            ChangePositionCharacter(false);
+        else
+            ChangePositionCharacter(true);
+
+        narrativePanel.SetActive(true);
         StartCoroutine(CoWaitShowUi());
+    }
+
+    private void ChangePositionCharacter(bool right)
+    {
+        if (right)
+        {
+            bgCharacterName.transform.localPosition = new Vector2(115, 205);
+            characterImage.transform.localPosition = new Vector2(250,450);
+            bgCharacterName.transform.localEulerAngles = new Vector2(0, 0);
+            characterNameText.transform.localEulerAngles = new Vector3(0, 0);
+        }
+        else
+        {
+            bgCharacterName.transform.localPosition = new Vector2(-115, 205);
+            characterImage.transform.localPosition = new Vector2(-250, 450);
+            bgCharacterName.transform.localEulerAngles = new Vector2(0, 180);
+            characterNameText.transform.localEulerAngles = new Vector3(0, 180);
+        }
     }
 
     public IEnumerator ChangeNarrativeText(string text)
@@ -50,7 +75,7 @@ public class UiController : Singleton<UiController>
         StartCoroutine(CoWaitShowUi());
     }
 
-    public void ShowQuestionText(List<string> variants) 
+    public void ShowQuestionText(List<string> variants)
     {
         questionPanel.SetActive(true);
         for (int i = 0; i < variants.Count; i++)

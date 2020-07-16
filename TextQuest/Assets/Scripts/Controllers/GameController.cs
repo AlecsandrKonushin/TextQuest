@@ -12,19 +12,19 @@ public class GameController : Singleton<GameController>
     public bool UiReady = true;
 
     private Dictionary<string, bool> InfluenceForGame = new Dictionary<string, bool>();
-    private bool[] _narrativeFirstScene = new bool[6] { true, true, true, true, false, true };
+    private bool[] _narrativeFirstScene = new bool[8] { true, true, true, true, false, true, true, true };
     private bool _nowNarrative = true;
 
     [SerializeField] private Character[] _characters;
     private Question[] _currentQuestions = null;
-    private Character _playingCharacter;
+    private Character _mainCharacter;
     private string _prevSpeakingName;
     private PartGame _currentPart;
 
     private void Start()
     {
         _currentPart = DataTexts.FirstPart;
-        _playingCharacter = _characters[0];
+        _mainCharacter = _characters[0];
     }
 
     public void NextPoint()
@@ -57,7 +57,6 @@ public class GameController : Singleton<GameController>
         FrameNarrative frame = _currentPart.Narrative[_counterNarrative];
         SetNextTextAndSprite(frame);
         _counterNarrative++;
-        _prevSpeakingName = frame.Character.Name;
     }
 
     private void SetNextQuestion()
@@ -84,11 +83,18 @@ public class GameController : Singleton<GameController>
             }
         }
         nowCharacter.ChangeState(frame.StateCharacter);
-        
-        if (nowCharacter.Name == _prevSpeakingName)        
-            StartCoroutine(UiController.Instance.ChangeNarrativeText(frame.Text));        
+
+        if (nowCharacter.Name == _prevSpeakingName)
+            StartCoroutine(UiController.Instance.ChangeNarrativeText(frame.Text));
         else
-            UiController.Instance.ShowNarrativeText(frame.Text, nowCharacter);
+        {
+            bool mainCharacter = false;
+            if (nowCharacter == _mainCharacter)
+                mainCharacter = true;
+            UiController.Instance.ShowNarrativeText(frame.Text, nowCharacter, mainCharacter);
+        }
+
+        _prevSpeakingName = frame.Character.Name;
     }
 
     private void SetNextQuestion(FrameQuestion frame)
@@ -123,7 +129,7 @@ public class GameController : Singleton<GameController>
 
         if (question.InfluencedCharacterName != null)
         {
-            _playingCharacter.ChangeCommunication(
+            _mainCharacter.ChangeCommunication(
                 question.InfluencedCharacterName,
                 question.InfluenceForCharacter);
         }
@@ -133,10 +139,13 @@ public class GameController : Singleton<GameController>
             InfluenceForGame.Add(question.InfluenceForGame, question.ValueInfluenceForGame);
         }
 
-        foreach (var info in InfluenceForGame)
+        if (_currentPart.Narrative[_counterNarrative] is FrameAnswer)
         {
-            Debug.Log(info.Key + " " + info.Value);
+            FrameAnswer frame = _currentPart.Narrative[_counterNarrative] as FrameAnswer;
+            frame.Text = frame.Answers[numberButton];
+            frame.StateCharacter = frame.States[numberButton];
         }
+
         UiController.Instance.HideQuestions();
         TapController.Instance.CanTap = true;
 

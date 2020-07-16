@@ -3,15 +3,20 @@ using System.Collections.Generic;
 
 public static class DataTexts
 {
-    public static Character[] Characters = new Character[2] { new Character("Jake"), new Character("Hanna") };
+    public static Character[] Characters = new Character[3] { new Character("Jake"), new Character("Hanna"), new Character("Matthew") };
 
     public static PartGame FirstPart = new PartGame(1,
-        new FrameNarrative[5] {
+        new FrameNarrative[7] {
             new FrameNarrative(Characters[0], CharacterState.Smile, "Это был обычный летний день, когда почти все экзамены сданы, и можно немного расслабиться на перемене."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Я Джейк Сандерс, а это мои одноклассники и по совместительству лучшие друзья: Ханна, Лилла и Мэтью."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Мы достаточно разные, но нам хорошо вместе и очень весело."),
             new FrameNarrative(Characters[1], CharacterState.Smile, "Джейк! Ты чего опять задумался?"),
-            new FrameNarrative(Characters[1], CharacterState.Smile, "Пилик-пилик (здесь должно быть изображение телефона)")
+            new FrameAnswer(Characters[1], CharacterState.Smile, "",
+                new string[3]{ "Я помню ее, она была очень доброй…", "Джейк, смотри на мир позитивнее.", "Ну ты гад! Это было ужасно!"},
+                new CharacterState[3]{ CharacterState.Smile, CharacterState.Smile, CharacterState.Hate}),
+            new FrameNarrative(Characters[0], CharacterState.Smile, "Ладно, какой у нас следующий урок?"),
+            new FrameNarrative(Characters[2], CharacterState.Smile, "Вроде физика."),
+
         },
         new FrameQuestion[1] {
             new FrameQuestion(Characters[0], CharacterState.Smile, "А? Да я засмотрелся на этот одуванчик... он напоминает мне..." ,
@@ -63,6 +68,19 @@ public class FrameQuestion : FrameNarrative
     }
 }
 
+public class FrameAnswer : FrameNarrative
+{
+    public string[] Answers;
+    public CharacterState[] States;
+
+    public FrameAnswer(Character character, CharacterState state, string text, string[] answers, CharacterState[] states) : base(character, state, text)
+    {
+        Answers = answers;
+        States = states;
+    }
+}
+
+
 public class Question
 {
     public string TextQuestion;
@@ -76,11 +94,11 @@ public class Question
         TextQuestion = text;
         InfluencedCharacterName = influencedCharacterName;
         InfluenceForCharacter = influenceForCharacter;
-        if(influenceForGame != null)
+        if (influenceForGame != null)
         {
             InfluenceForGame = influenceForGame;
             ValueInfluenceForGame = valueInfluenceForGame;
-        }        
+        }
     }
 }
 

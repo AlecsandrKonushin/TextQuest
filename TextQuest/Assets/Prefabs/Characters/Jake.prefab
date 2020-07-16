@@ -45,6 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Jake
   State: 0
-  Sprite: {fileID: 21300000, guid: 78768a58fd075fd448724bd7006519ae, type: 3}
-  SmileSprite: {fileID: 21300000, guid: 78768a58fd075fd448724bd7006519ae, type: 3}
+  Sprite: {fileID: 21300000, guid: 190fb91b41abe8a49899dfc42862bca9, type: 3}
+  SmileSprite: {fileID: 21300000, guid: 190fb91b41abe8a49899dfc42862bca9, type: 3}
   HateSprite: {fileID: 0}
