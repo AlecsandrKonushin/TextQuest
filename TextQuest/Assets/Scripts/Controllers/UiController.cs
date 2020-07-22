@@ -9,6 +9,7 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject narrativePanel;
     [SerializeField] private GameObject questionPanel;
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject phonePanel;
 
     [Space]
     [Header("Основные элементы UI")]
@@ -22,6 +23,13 @@ public class UiController : Singleton<UiController>
     [Space]
     [Header("Дополнительные элементы UI")]
     [SerializeField] private GameObject pauseButton;
+
+    [Space]
+    [Header("Phone элементы")]
+    [SerializeField] private SpriteRenderer messageSpriteRen;
+    [SerializeField] private Sprite[] messageSprites;
+    [SerializeField] private GameObject alertMessage;
+
 
     private Animator _animatorPanelNarrative;
     private float timeChange = .5f;
@@ -94,6 +102,25 @@ public class UiController : Singleton<UiController>
         {
             question.gameObject.SetActive(false);
         }
+    }
+
+    public void ShowPhoneMessage()
+    {
+        narrativePanel.SetActive(false);
+        HideQuestions();
+
+        alertMessage.SetActive(true);
+    }
+
+    public void ClickMessageButton()
+    {
+        if (GameController.Instance.PhoneMessage)
+            GameController.Instance.SetPhoneQuestion();
+    }
+
+    public void ShowPhonePanel()
+    {
+        
     }
 
     public void PlayGame()
