@@ -100,18 +100,20 @@ public class GameController : Singleton<GameController>
         {
             variants.Add(question.TextQuestion);
         }
-        UiController.Instance.ShowQuestionText(variants);
+        UiController.Instance.ShowQuestionText(variants, PhoneMessage);
     }
 
     private void PhoneMessageNow()
     {
         PhoneMessage = true;
-        UiController.Instance.ShowPhoneMessage();
+        UiController.Instance.ShowPhoneAlert();
     }
 
     public void SetPhoneQuestion()
     {
-        // Задаёт сообщение на телефоне, затем вызывает его отображение через uiCon
+        FramePhone frame = _currentPart.Narrative[_counterFrames] as FramePhone;
+        UiController.Instance.ShowPhonePanel(frame.Messages, frame.NameSender);
+        SetNextQuestion(frame);
     }
 
     private void ResetValueCounterScene()

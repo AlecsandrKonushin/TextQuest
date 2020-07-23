@@ -17,7 +17,7 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject bgCharacterName;
     [SerializeField] private Text characterNameText;
     [SerializeField] private Image characterImage;
-    [SerializeField] private MyButton[] myButtoms;
+    [SerializeField] private MyButton[] myButtons;
     [SerializeField] private Text[] textsButtons;
 
     [Space]
@@ -26,9 +26,14 @@ public class UiController : Singleton<UiController>
 
     [Space]
     [Header("Phone элементы")]
-    [SerializeField] private SpriteRenderer messageSpriteRen;
-    [SerializeField] private Sprite[] messageSprites;
+    [SerializeField] private SpriteRenderer messageButtonSpriteRen;
+    [SerializeField] private Sprite[] messageButtonSprites;
     [SerializeField] private GameObject alertMessage;
+    [SerializeField] private GameObject[] messages;
+    [SerializeField] private Text[] messagesTexts;
+    [SerializeField] private Text[] nameSenderTexts;
+    [SerializeField] private MyButton[] answerButtons;
+    [SerializeField] private Text[] textsAnswerButtons;
 
 
     private Animator _animatorPanelNarrative;
@@ -83,13 +88,24 @@ public class UiController : Singleton<UiController>
         StartCoroutine(CoWaitShowUi());
     }
 
-    public void ShowQuestionText(List<string> variants)
+    public void ShowQuestionText(List<string> variants, bool phoneAnswer)
     {
-        questionPanel.SetActive(true);
-        for (int i = 0; i < variants.Count; i++)
+        if (phoneAnswer)
         {
-            textsButtons[i].text = variants[i];
-            myButtoms[i].gameObject.SetActive(true);
+            for (int i = 0; i < variants.Count; i++)
+            {
+                textsAnswerButtons[i].text = variants[i];
+                answerButtons[i].gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            questionPanel.SetActive(true);
+            for (int i = 0; i < variants.Count; i++)
+            {
+                textsButtons[i].text = variants[i];
+                myButtons[i].gameObject.SetActive(true);
+            }
         }
 
         StartCoroutine(CoWaitShowUi());
@@ -98,13 +114,13 @@ public class UiController : Singleton<UiController>
     public void HideQuestions()
     {
         questionPanel.SetActive(false);
-        foreach (var question in myButtoms)
+        foreach (var question in myButtons)
         {
             question.gameObject.SetActive(false);
         }
     }
 
-    public void ShowPhoneMessage()
+    public void ShowPhoneAlert()
     {
         narrativePanel.SetActive(false);
         HideQuestions();
@@ -112,15 +128,20 @@ public class UiController : Singleton<UiController>
         alertMessage.SetActive(true);
     }
 
-    public void ClickMessageButton()
+    public void ClickAlertButton()
     {
         if (GameController.Instance.PhoneMessage)
             GameController.Instance.SetPhoneQuestion();
     }
 
-    public void ShowPhonePanel()
+    public void ShowPhonePanel(string[] messages, string nameSender)
     {
-        
+        for (int i = 0; i < messages.Length; i++)
+        {
+            this.messages[i].SetActive(true);
+            messagesTexts[i].text = messages[i];
+            nameSenderTexts[i].text = nameSender;
+        }
     }
 
     public void PlayGame()

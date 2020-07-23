@@ -26,11 +26,16 @@ public static class DataTexts
             new FramePhone(Characters[1], CharacterState.Smile, "",
                 new Question[3]
                 {
-                    new Question( "Лужайку у дома, в котором мы жили летом у бабушки.", Characters[1].Name, 2, "treeChange", false ),
-                    new Question( "Как всё в этом мире быстротечно", Characters[1].Name, 1, "treeChange", true),
-                    new Question( "ТВОЮ ПРИЧЁСКУ, когда ты неудачно подстриглась в прошлом году!", Characters[1].Name, 0 ),
+                    new Question("Ок."),
+                    new Question("Хорошо, легкой тебе смены."),
+                    new Question("Спасибо мам, увидимся."),
                 },
-                new string[0])
+                new string[3]
+                {   "Джейк, я сегодня взяла дополнительную смену в ночь,",
+                    "еда в холодильнике,",
+                    "не засиживайся допоздна за компьютером, целую."
+                },
+                "Мама")
         });
 }
 
@@ -85,11 +90,13 @@ public class FrameAnswer : FrameNarrative
 
 public class FramePhone : FrameQuestion
 {
-    public string[] PrevMessages;
+    public string[] Messages;
+    public string NameSender;
 
-    public FramePhone(Character character, CharacterState state, string text, Question[] questions, string[] prevMessages) : base(character, state, text, questions)
+    public FramePhone(Character character, CharacterState state, string text, Question[] questions, string[] messages, string nameSender) : base(character, state, text, questions)
     {
-        PrevMessages = prevMessages;
+        Messages = messages;
+        NameSender = nameSender;
     }
 }
 
