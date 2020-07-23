@@ -45,6 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Matthew
   State: 0
-  Sprite: {fileID: 21300000, guid: 5c087fc6a91dc4a4caa2468f316e8bf6, type: 3}
-  SmileSprite: {fileID: 21300000, guid: 5c087fc6a91dc4a4caa2468f316e8bf6, type: 3}
+  Sprite: {fileID: 21300000, guid: 45b67879b1035544ba148070a8306c4d, type: 3}
+  SmileSprite: {fileID: 21300000, guid: 45b67879b1035544ba148070a8306c4d, type: 3}
   HateSprite: {fileID: 0}

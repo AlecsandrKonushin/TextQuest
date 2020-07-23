@@ -9,6 +9,11 @@ public class MainController : DontDestroySingleton<MainController>
     private bool _miniGame;
     public bool MiniGame;
 
+    private void Start()
+    {
+        PlayGame();
+    }
+
     public void PlayGame()
     {
         _pause = false;

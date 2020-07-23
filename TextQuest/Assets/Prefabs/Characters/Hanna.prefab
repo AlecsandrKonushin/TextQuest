@@ -45,6 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Hanna
   State: 0
-  Sprite: {fileID: 21300000, guid: 03259b84d1ed53545999b5f5d46a46db, type: 3}
-  SmileSprite: {fileID: 21300000, guid: 03259b84d1ed53545999b5f5d46a46db, type: 3}
-  HateSprite: {fileID: 21300000, guid: 742e87bb41a04b749aef3d4e835bfc1a, type: 3}
+  Sprite: {fileID: 21300000, guid: aae195f75a72af943bf2cacef5e8766c, type: 3}
+  SmileSprite: {fileID: 21300000, guid: aae195f75a72af943bf2cacef5e8766c, type: 3}
+  HateSprite: {fileID: 21300000, guid: d1db4c71cbd3cc54cae55997c00363a1, type: 3}

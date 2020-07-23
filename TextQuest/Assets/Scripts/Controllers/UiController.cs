@@ -12,18 +12,14 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject phonePanel;
 
     [Space]
-    [Header("Основные элементы UI")]
+    [Header("Основные элементы Frame")]
     [SerializeField] private Text narrativeText;
     [SerializeField] private GameObject bgCharacterName;
     [SerializeField] private Text characterNameText;
     [SerializeField] private Image characterImage;
     [SerializeField] private MyButton[] myButtons;
     [SerializeField] private Text[] textsButtons;
-
-    [Space]
-    [Header("Дополнительные элементы UI")]
-    [SerializeField] private GameObject pauseButton;
-
+    
     [Space]
     [Header("Phone элементы")]
     [SerializeField] private SpriteRenderer messageButtonSpriteRen;
@@ -47,37 +43,15 @@ public class UiController : Singleton<UiController>
     public void ShowNarrativeText(string text, Character character, bool mainCharacter)
     {
         narrativePanel.SetActive(false);
+        HidePrevCharacter();
         
-        characterImage.sprite = character.Sprite;
-        characterNameText.text = character.Name;
         narrativeText.text = text;
-
-        if (mainCharacter)
-            ChangePositionCharacter(false);
-        else
-            ChangePositionCharacter(true);
+        ShowSpeakingCharacter(character.Sprite, character.Name, mainCharacter);
 
         narrativePanel.SetActive(true);
         StartCoroutine(CoWaitShowUi());
     }
 
-    private void ChangePositionCharacter(bool right)
-    {
-        if (right)
-        {
-            bgCharacterName.transform.localPosition = new Vector2(115, 205);
-            characterImage.transform.localPosition = new Vector2(250,450);
-            bgCharacterName.transform.localEulerAngles = new Vector2(0, 0);
-            characterNameText.transform.localEulerAngles = new Vector3(0, 0);
-        }
-        else
-        {
-            bgCharacterName.transform.localPosition = new Vector2(-115, 205);
-            characterImage.transform.localPosition = new Vector2(-250, 450);
-            bgCharacterName.transform.localEulerAngles = new Vector2(0, 180);
-            characterNameText.transform.localEulerAngles = new Vector3(0, 180);
-        }
-    }
 
     public IEnumerator ChangeNarrativeText(string text)
     {
@@ -109,6 +83,44 @@ public class UiController : Singleton<UiController>
         }
 
         StartCoroutine(CoWaitShowUi());
+    }
+
+    private void HidePrevCharacter()
+    {
+        characterImage.gameObject.SetActive(false);
+        bgCharacterName.gameObject.SetActive(false);
+    }
+
+    private void ShowSpeakingCharacter(Sprite character, string name, bool mainCharacter)
+    {
+        characterImage.sprite = character;
+        characterNameText.text = name;
+
+        if (mainCharacter)
+            ChangePositionCharacter(false);
+        else
+            ChangePositionCharacter(true);
+
+        characterImage.gameObject.SetActive(true);
+        bgCharacterName.gameObject.SetActive(true);
+    }
+
+    private void ChangePositionCharacter(bool right)
+    {
+        if (right)
+        {
+            bgCharacterName.transform.localPosition = new Vector2(125, -190);
+            characterImage.transform.localPosition = new Vector2(250, 205);
+            bgCharacterName.transform.localEulerAngles = new Vector2(0, 0);
+            characterNameText.transform.localEulerAngles = new Vector3(0, 0);
+        }
+        else
+        {
+            bgCharacterName.transform.localPosition = new Vector2(-130, -190);
+            characterImage.transform.localPosition = new Vector2(-270, 185);
+            bgCharacterName.transform.localEulerAngles = new Vector2(0, 180);
+            characterNameText.transform.localEulerAngles = new Vector3(0, 180);
+        }
     }
 
     public void HideQuestions()
@@ -143,21 +155,7 @@ public class UiController : Singleton<UiController>
             nameSenderTexts[i].text = nameSender;
         }
     }
-
-    public void PlayGame()
-    {
-        pausePanel.SetActive(false);
-        pauseButton.SetActive(true);
-        MainController.Instance.PlayGame();
-    }
-
-    public void PauseGame()
-    {
-        pausePanel.SetActive(true);
-        pauseButton.SetActive(false);
-        MainController.Instance.PauseGame();
-    }
-
+    
     public void ExitGame()
     {
         MainController.Instance.ExitGame();
