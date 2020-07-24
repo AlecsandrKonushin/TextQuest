@@ -38,37 +38,27 @@ public class GameController : Singleton<GameController>
 
         UiReady = false;
 
-        if (_currentPart.Narrative[_counterFrames] is FrameQuestion)
-            SetNextQuestion();
-        else if (_currentPart.Narrative[_counterFrames] is FramePhone)
-            PhoneMessageNow();
-        else
-            SetNextNarrative();
-        _counterFrames++;
+        FrameNarrative frame = _currentPart.Narrative[_counterFrames];
+        bool reloadNarrative = CheckSpeakingCharacter(frame);
 
+        if (frame is FramePhone)
+            PhoneMessageNow();
+        else if (frame is FrameQuestion)
+        {
+            SetNextNarrative(frame, reloadNarrative);
+            SetNextQuestion(frame as FrameQuestion);
+        }
+        else
+            SetNextNarrative(frame, reloadNarrative);
+
+        _counterFrames++;
         if (_counterFrames >= _currentPart.Narrative.Length)
             _endScene = true;
     }
 
-    private void SetNextNarrative()
+    private bool CheckSpeakingCharacter(FrameNarrative frame)
     {
-        FrameNarrative frame = _currentPart.Narrative[_counterFrames];
-        SetNextTextAndSprite(frame);
-    }
-
-    private void SetNextQuestion()
-    {
-        UiController uiCon = UiController.Instance;
-        uiCon.HideQuestions();
-        TapController.Instance.CanTap = false;
-        FrameQuestion frame = _currentPart.Narrative[_counterFrames] as FrameQuestion;
-        _currentQuestion = frame;
-        SetNextTextAndSprite(frame);
-        SetNextQuestion(frame);
-    }
-
-    private void SetNextTextAndSprite(FrameNarrative frame)
-    {
+        bool reloab = false;
         Character nowCharacter = null;
         foreach (var character in _characters)
         {
@@ -80,21 +70,37 @@ public class GameController : Singleton<GameController>
         }
         nowCharacter.ChangeState(frame.StateCharacter);
 
-        if (nowCharacter.Name == _prevSpeakingName)
-            StartCoroutine(UiController.Instance.ChangeNarrativeText(frame.Text));
-        else
-        {
-            bool mainCharacter = false;
-            if (nowCharacter == _mainCharacter)
-                mainCharacter = true;
-            UiController.Instance.ShowNarrativeText(frame.Text, nowCharacter, mainCharacter);
-        }
+        if (_prevSpeakingName != null && nowCharacter.Name != _prevSpeakingName)        
+            reloab = true;        
+
+        bool mainCharacter = false;
+        if (nowCharacter == _mainCharacter)
+            mainCharacter = true;
+
+        StartCoroutine(UiController.Instance.ShowSpeakingCharacter(nowCharacter.Sprite, nowCharacter.Name, mainCharacter, reloab));
+
+        return reloab;
+    }
+
+    private void SetNextNarrative(FrameNarrative frame, bool reloadNarrative)
+    {
+        UiController uiCon = UiController.Instance;
+
+        if (_prevSpeakingName == frame.Character.Name)
+            StartCoroutine(uiCon.ChangeNarrativeText(frame.Text));
+        else if(_prevSpeakingName == null)
+            uiCon.ShowNarrativePanel(frame.Text);
+        else        
+            StartCoroutine(uiCon.ChangeNarrativeText(frame.Text));        
 
         _prevSpeakingName = frame.Character.Name;
     }
 
     private void SetNextQuestion(FrameQuestion frame)
     {
+        TapController.Instance.CanTap = false;
+        _currentQuestion = frame;
+
         List<string> variants = new List<string>();
         foreach (var question in frame.Questions)
         {

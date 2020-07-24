@@ -17,7 +17,7 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject bgCharacterName;
     [SerializeField] private Text characterNameText;
     [SerializeField] private Image characterImage;
-    [SerializeField] private MyButton[] myButtons;
+    [SerializeField] private MyButton[] answerButtons;
     [SerializeField] private Text[] textsButtons;
     
     [Space]
@@ -28,10 +28,10 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject[] messages;
     [SerializeField] private Text[] messagesTexts;
     [SerializeField] private Text[] nameSenderTexts;
-    [SerializeField] private MyButton[] answerButtons;
+    [SerializeField] private MyButton[] phoneAnswerButtons;
     [SerializeField] private Text[] textsAnswerButtons;
 
-
+    public bool ClickButton = false;
     private Animator _animatorPanelNarrative;
     private float timeChange = .5f;
 
@@ -40,18 +40,18 @@ public class UiController : Singleton<UiController>
         _animatorPanelNarrative = narrativePanel.GetComponent<Animator>();
     }
 
-    public void ShowNarrativeText(string text, Character character, bool mainCharacter)
+    public void ShowNarrativePanel(string text)
     {
-        narrativePanel.SetActive(false);
-        HidePrevCharacter();
-        
-        narrativeText.text = text;
-        ShowSpeakingCharacter(character.Sprite, character.Name, mainCharacter);
+        questionPanel.SetActive(false);
+        phonePanel.SetActive(false);
+
+        narrativeText.text = text;        
 
         narrativePanel.SetActive(true);
+        narrativeText.gameObject.SetActive(true);
+
         StartCoroutine(CoWaitShowUi());
     }
-
 
     public IEnumerator ChangeNarrativeText(string text)
     {
@@ -64,6 +64,8 @@ public class UiController : Singleton<UiController>
 
     public void ShowQuestionText(List<string> variants, bool phoneAnswer)
     {
+        phonePanel.SetActive(false);
+
         if (phoneAnswer)
         {
             for (int i = 0; i < variants.Count; i++)
@@ -78,23 +80,26 @@ public class UiController : Singleton<UiController>
             for (int i = 0; i < variants.Count; i++)
             {
                 textsButtons[i].text = variants[i];
-                myButtons[i].gameObject.SetActive(true);
+                answerButtons[i].gameObject.SetActive(true);
             }
         }
 
         StartCoroutine(CoWaitShowUi());
     }
 
-    private void HidePrevCharacter()
+    public IEnumerator ShowSpeakingCharacter(Sprite spriteCharacter, string nameCharacter, bool mainCharacter, bool reload)
     {
-        characterImage.gameObject.SetActive(false);
-        bgCharacterName.gameObject.SetActive(false);
-    }
+        if (reload)
+        {
+            characterImage.GetComponent<Animator>().SetTrigger("hide");
+            bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
+            yield return new WaitForSeconds(timeChange);
+            characterImage.gameObject.SetActive(false);
+            bgCharacterName.gameObject.SetActive(false);
+        }
 
-    private void ShowSpeakingCharacter(Sprite character, string name, bool mainCharacter)
-    {
-        characterImage.sprite = character;
-        characterNameText.text = name;
+        characterImage.sprite = spriteCharacter;
+        characterNameText.text = nameCharacter;
 
         if (mainCharacter)
             ChangePositionCharacter(false);
@@ -123,10 +128,16 @@ public class UiController : Singleton<UiController>
         }
     }
 
+    public void ShowPhonePanel()
+    {
+        narrativePanel.SetActive(false);
+        questionPanel.SetActive(false);
+    }
+
     public void HideQuestions()
     {
         questionPanel.SetActive(false);
-        foreach (var question in myButtons)
+        foreach (var question in answerButtons)
         {
             question.gameObject.SetActive(false);
         }
@@ -154,6 +165,11 @@ public class UiController : Singleton<UiController>
             messagesTexts[i].text = messages[i];
             nameSenderTexts[i].text = nameSender;
         }
+    }
+
+    public void ClickAnyButton()
+    {
+        ClickButton = true;
     }
     
     public void ExitGame()
