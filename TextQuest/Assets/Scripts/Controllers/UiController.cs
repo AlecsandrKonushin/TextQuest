@@ -53,7 +53,12 @@ public class UiController : Singleton<UiController>
         StartCoroutine(CoWaitShowUi());
     }
 
-    public IEnumerator ChangeNarrativeText(string text)
+    public void ChangeNarrativeText(string text)
+    {
+        StartCoroutine(CoChangeNarrativeText(text));
+    }
+
+    private IEnumerator CoChangeNarrativeText(string text)
     {
         _animatorPanelNarrative.SetTrigger("hideText");
         yield return new WaitForSeconds(timeChange);
@@ -87,10 +92,16 @@ public class UiController : Singleton<UiController>
         StartCoroutine(CoWaitShowUi());
     }
 
-    public IEnumerator ShowSpeakingCharacter(Sprite spriteCharacter, string nameCharacter, bool mainCharacter, bool reload)
+    public void ShowSpeakingCharacter(Character character, bool mainCharacter, bool reload)
+    {
+        StartCoroutine(CoShowSpeakingCharacter(character.Sprite, character.Name, mainCharacter, reload));
+    }
+
+    private IEnumerator CoShowSpeakingCharacter(Sprite spriteCharacter, string nameCharacter, bool mainCharacter, bool reload)
     {
         if (reload)
         {
+            Debug.Log("reload");
             characterImage.GetComponent<Animator>().SetTrigger("hide");
             bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
             yield return new WaitForSeconds(timeChange);
@@ -146,6 +157,7 @@ public class UiController : Singleton<UiController>
     public void ShowPhoneAlert()
     {
         narrativePanel.SetActive(false);
+        questionPanel.SetActive(false);
         HideQuestions();
 
         alertMessage.SetActive(true);

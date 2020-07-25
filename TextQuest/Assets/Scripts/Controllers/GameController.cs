@@ -4,24 +4,27 @@ using UnityEngine;
 
 public class GameController : Singleton<GameController>
 {
-    private int _counterFrames;
-
-    private bool _endScene;
     public bool UiReady = true;
+    public Character[] Characters;
+    public Character MainCharacter { get; private set; }
+    public Character SpeakingCharacter;
+    public Character PrevSpeakingCharacter;
+    public FrameGame CurrentFrame;
+    public bool PositionSpriteleft;
+    public bool ReloadNarrative;
 
+    private PartGame _currentPart;
+    private int _counterFrames;
+    private bool _endScene;
     private Dictionary<string, bool> InfluenceForGame = new Dictionary<string, bool>();
 
-    [SerializeField] private Character[] _characters;
     private FrameQuestion _currentQuestion = null;
-    private Character _mainCharacter;
-    private string _prevSpeakingName;
-    private PartGame _currentPart;
     public bool PhoneMessage { get; private set; }
 
     private void Start()
     {
         _currentPart = DataTexts.FirstPart;
-        _mainCharacter = _characters[0];
+        MainCharacter = Characters[0];
     }
 
     public void NextPoint()
@@ -37,64 +40,17 @@ public class GameController : Singleton<GameController>
         }
 
         UiReady = false;
-
-        FrameNarrative frame = _currentPart.Narrative[_counterFrames];
-        bool reloadNarrative = CheckSpeakingCharacter(frame);
-
-        if (frame is FramePhone)
-            PhoneMessageNow();
-        else if (frame is FrameQuestion)
-        {
-            SetNextNarrative(frame, reloadNarrative);
-            SetNextQuestion(frame as FrameQuestion);
-        }
-        else
-            SetNextNarrative(frame, reloadNarrative);
+        ReloadNarrative = false;
+        
+        CurrentFrame = _currentPart.Frames[_counterFrames];
+        CurrentFrame.SetData();
 
         _counterFrames++;
-        if (_counterFrames >= _currentPart.Narrative.Length)
+        if (_counterFrames >= _currentPart.Frames.Length)
             _endScene = true;
     }
 
-    private bool CheckSpeakingCharacter(FrameNarrative frame)
-    {
-        bool reloab = false;
-        Character nowCharacter = null;
-        foreach (var character in _characters)
-        {
-            if (character.Name == frame.Character.Name)
-            {
-                nowCharacter = character;
-                continue;
-            }
-        }
-        nowCharacter.ChangeState(frame.StateCharacter);
-
-        if (_prevSpeakingName != null && nowCharacter.Name != _prevSpeakingName)        
-            reloab = true;        
-
-        bool mainCharacter = false;
-        if (nowCharacter == _mainCharacter)
-            mainCharacter = true;
-
-        StartCoroutine(UiController.Instance.ShowSpeakingCharacter(nowCharacter.Sprite, nowCharacter.Name, mainCharacter, reloab));
-
-        return reloab;
-    }
-
-    private void SetNextNarrative(FrameNarrative frame, bool reloadNarrative)
-    {
-        UiController uiCon = UiController.Instance;
-
-        if (_prevSpeakingName == frame.Character.Name)
-            StartCoroutine(uiCon.ChangeNarrativeText(frame.Text));
-        else if(_prevSpeakingName == null)
-            uiCon.ShowNarrativePanel(frame.Text);
-        else        
-            StartCoroutine(uiCon.ChangeNarrativeText(frame.Text));        
-
-        _prevSpeakingName = frame.Character.Name;
-    }
+    
 
     private void SetNextQuestion(FrameQuestion frame)
     {
@@ -117,7 +73,7 @@ public class GameController : Singleton<GameController>
 
     public void SetPhoneQuestion()
     {
-        FramePhone frame = _currentPart.Narrative[_counterFrames] as FramePhone;
+        FramePhone frame = _currentPart.Frames[_counterFrames] as FramePhone;
         UiController.Instance.ShowPhonePanel(frame.Messages, frame.NameSender);
         SetNextQuestion(frame);
     }
@@ -142,7 +98,7 @@ public class GameController : Singleton<GameController>
 
         if (question.InfluencedCharacterName != null)
         {
-            _mainCharacter.ChangeCommunication(
+            MainCharacter.ChangeCommunication(
                 question.InfluencedCharacterName,
                 question.InfluenceForCharacter);
         }
@@ -152,9 +108,9 @@ public class GameController : Singleton<GameController>
             InfluenceForGame.Add(question.InfluenceForGame, question.ValueInfluenceForGame);
         }
 
-        if (_currentPart.Narrative[_counterFrames] is FrameAnswer)
+        if (_currentPart.Frames[_counterFrames] is FrameAnswer)
         {
-            FrameAnswer frame = _currentPart.Narrative[_counterFrames] as FrameAnswer;
+            FrameAnswer frame = _currentPart.Frames[_counterFrames] as FrameAnswer;
             frame.Text = frame.Answers[numberButton];
             frame.StateCharacter = frame.States[numberButton];
         }

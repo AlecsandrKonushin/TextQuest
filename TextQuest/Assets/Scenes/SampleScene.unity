@@ -2537,10 +2537,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UiReady: 1
-  _characters:
+  Characters:
   - {fileID: 8616055237059778071, guid: 6c51af2772aadac44a01332bd234f637, type: 3}
-  - {fileID: 8616055237059778071, guid: e4c366358048f534181a4f62bbea808c, type: 3}
+  - {fileID: 8616055237059778071, guid: 0fe9601db88221f4b8aeee1c0478cd45, type: 3}
   - {fileID: 8616055237059778071, guid: a124ae1f73f0a884b85f0e3560626b78, type: 3}
+  - {fileID: 8616055237059778071, guid: e4c366358048f534181a4f62bbea808c, type: 3}
+  SpeakingCharacter: {fileID: 0}
+  PrevSpeakingCharacter: {fileID: 0}
+  CurrentFrame: {fileID: 0}
+  PositionSpriteleft: 0
+  ReloadNarrative: 0
 --- !u!1 &1030588718
 GameObject:
   m_ObjectHideFlags: 0

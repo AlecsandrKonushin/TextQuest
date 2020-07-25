@@ -1,12 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class DataTexts
 {
-    public static Character[] Characters = new Character[3] { new Character("Jake"), new Character("Hanna"), new Character("Matthew") };
+    public static Character[] Characters = new Character[4] { new Character("Jake"), new Character("Hanna"), new Character("Matthew"), new Character("Lila") };
 
     public static PartGame FirstPart = new PartGame(1,
-        new FrameNarrative[9] {
+        new FrameGame[10] {
             new FrameNarrative(Characters[0], CharacterState.Smile, "Это был обычный летний день, когда почти все экзамены сданы, и можно немного расслабиться на перемене."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Я Джейк Сандерс, а это мои одноклассники и по совместительству лучшие друзья: Ханна, Лилла и Мэтью."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Мы достаточно разные, но нам хорошо вместе и очень весело."),
@@ -23,6 +25,7 @@ public static class DataTexts
                 new CharacterState[3]{ CharacterState.Smile, CharacterState.Smile, CharacterState.Hate}),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Ладно, какой у нас следующий урок?"),
             new FrameNarrative(Characters[2], CharacterState.Smile, "Вроде физика."),
+            new FrameNarrative(Characters[3], CharacterState.Smile, "Ээхх…. Еще есть 15 минут на свободе…"),
             new FramePhone(Characters[1], CharacterState.Smile, "",
                 new Question[3]
                 {
@@ -43,16 +46,21 @@ public static class DataTexts
 public class PartGame
 {
     public int NumberPart;
-    public FrameNarrative[] Narrative;
+    public FrameGame[] Frames;
 
-    public PartGame(int numberPart, FrameNarrative[] narrative)
+    public PartGame(int numberPart, FrameGame[] frames)
     {
         NumberPart = numberPart;
-        Narrative = narrative;
+        Frames = frames;
     }
 }
 
-public class FrameNarrative
+public abstract class FrameGame : MonoBehaviour
+{
+    public abstract void SetData();
+}
+
+public class FrameNarrative : FrameGame
 {
     public Character Character;
     public CharacterState StateCharacter = CharacterState.Smile;
@@ -64,6 +72,48 @@ public class FrameNarrative
         StateCharacter = state;
         Text = text;
     }
+
+    public override void SetData()
+    {
+        CheckSpeakingCharacter();
+
+        UiController uiCon = UiController.Instance;
+        GameController gameCon = GameController.Instance;
+
+        if (gameCon.PrevSpeakingCharacter == null)
+            uiCon.ShowNarrativePanel(Text);
+        else
+            uiCon.ChangeNarrativeText(Text);
+
+        gameCon.PrevSpeakingCharacter = gameCon.SpeakingCharacter;
+    }
+
+    protected void CheckSpeakingCharacter()
+    {
+        GameController gameCon = GameController.Instance;
+        gameCon.ReloadNarrative = false;
+
+        gameCon.SpeakingCharacter = null;
+        foreach (var character in gameCon.Characters)
+        {
+            if (character.Name == Character.Name)
+            {
+                gameCon.SpeakingCharacter = character;
+                continue;
+            }
+        }
+        gameCon.SpeakingCharacter.ChangeState(StateCharacter);
+
+        if (gameCon.PrevSpeakingCharacter != null && gameCon.SpeakingCharacter.Name != gameCon.PrevSpeakingCharacter.Name)
+            gameCon.ReloadNarrative = true;
+
+        gameCon.PositionSpriteleft = false;
+        if (gameCon.SpeakingCharacter == gameCon.MainCharacter)
+            gameCon.PositionSpriteleft = true;
+
+        Character nowCharacter = gameCon.SpeakingCharacter;
+        UiController.Instance.ShowSpeakingCharacter(nowCharacter, gameCon.PositionSpriteleft, gameCon.ReloadNarrative);
+    }
 }
 
 public class FrameQuestion : FrameNarrative
@@ -73,6 +123,11 @@ public class FrameQuestion : FrameNarrative
     public FrameQuestion(Character character, CharacterState state, string text, Question[] questions) : base(character, state, text)
     {
         Questions = questions;
+    }
+
+    public override void SetData()
+    {
+        base.SetData();
     }
 }
 
