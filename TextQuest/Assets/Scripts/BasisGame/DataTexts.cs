@@ -3,12 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class DataTexts
+public class DataTexts : Singleton<DataTexts>
 {
-    public static Character[] Characters = new Character[4] { new Character("Jake"), new Character("Hanna"), new Character("Matthew"), new Character("Lila") };
+    public Character[] Characters;
+    public PartGame FirstPart;
 
-    public static PartGame FirstPart = new PartGame(1,
-        new FrameGame[10] {
+    public void Start()
+    {
+        Characters = FrameController.Instance.Characters;
+        CreateFirstPart();
+    }
+
+    private void CreateFirstPart()
+    {
+        FirstPart = new PartGame(1,
+            new FrameGame[10] {
             new FrameNarrative(Characters[0], CharacterState.Smile, "Это был обычный летний день, когда почти все экзамены сданы, и можно немного расслабиться на перемене."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Я Джейк Сандерс, а это мои одноклассники и по совместительству лучшие друзья: Ханна, Лилла и Мэтью."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Мы достаточно разные, но нам хорошо вместе и очень весело."),
@@ -39,9 +48,14 @@ public static class DataTexts
                     "не засиживайся допоздна за компьютером, целую."
                 },
                 "Мама")
-        });
+            });
+    }
 }
 
+public enum TypeFrame
+{
+    Narrative
+}
 
 public class PartGame
 {
@@ -57,7 +71,10 @@ public class PartGame
 
 public abstract class FrameGame : MonoBehaviour
 {
+    public TypeFrame Type;
+
     public abstract void SetData();
+    public abstract void HideData();
 }
 
 public class FrameNarrative : FrameGame
@@ -68,6 +85,7 @@ public class FrameNarrative : FrameGame
 
     public FrameNarrative(Character character, CharacterState state, string text)
     {
+        Type = TypeFrame.Narrative;
         Character = character;
         StateCharacter = state;
         Text = text;
@@ -78,41 +96,46 @@ public class FrameNarrative : FrameGame
         CheckSpeakingCharacter();
 
         UiController uiCon = UiController.Instance;
-        GameController gameCon = GameController.Instance;
+        FrameController frameCon = FrameController.Instance;
 
-        if (gameCon.PrevSpeakingCharacter == null)
+        if (frameCon.PrevSpeakingCharacter == null)
             uiCon.ShowNarrativePanel(Text);
         else
             uiCon.ChangeNarrativeText(Text);
 
-        gameCon.PrevSpeakingCharacter = gameCon.SpeakingCharacter;
+        frameCon.PrevSpeakingCharacter = frameCon.SpeakingCharacter;
+    }
+
+    public override void HideData()
+    {
+        Debug.Log("hide data");
     }
 
     protected void CheckSpeakingCharacter()
     {
-        GameController gameCon = GameController.Instance;
-        gameCon.ReloadNarrative = false;
+        FrameController frameCon = FrameController.Instance;
+        frameCon.ReloadNarrative = false;
 
-        gameCon.SpeakingCharacter = null;
-        foreach (var character in gameCon.Characters)
+        frameCon.SpeakingCharacter = null;
+        foreach (var character in frameCon.Characters)
         {
             if (character.Name == Character.Name)
             {
-                gameCon.SpeakingCharacter = character;
+                frameCon.SpeakingCharacter = character;
                 continue;
             }
         }
-        gameCon.SpeakingCharacter.ChangeState(StateCharacter);
+        frameCon.SpeakingCharacter.ChangeState(StateCharacter);
 
-        if (gameCon.PrevSpeakingCharacter != null && gameCon.SpeakingCharacter.Name != gameCon.PrevSpeakingCharacter.Name)
-            gameCon.ReloadNarrative = true;
+        if (frameCon.PrevSpeakingCharacter != null && frameCon.SpeakingCharacter.Name != frameCon.PrevSpeakingCharacter.Name)
+            frameCon.ReloadNarrative = true;
 
-        gameCon.PositionSpriteleft = false;
-        if (gameCon.SpeakingCharacter == gameCon.MainCharacter)
-            gameCon.PositionSpriteleft = true;
+        frameCon.PositionSpriteleft = false;
+        if (frameCon.SpeakingCharacter == frameCon.MainCharacter)
+            frameCon.PositionSpriteleft = true;
 
-        Character nowCharacter = gameCon.SpeakingCharacter;
-        UiController.Instance.ShowSpeakingCharacter(nowCharacter, gameCon.PositionSpriteleft, gameCon.ReloadNarrative);
+        Character nowCharacter = frameCon.SpeakingCharacter;
+        UiController.Instance.ShowSpeakingCharacter(nowCharacter, frameCon.PositionSpriteleft, frameCon.ReloadNarrative);
     }
 }
 
@@ -128,6 +151,25 @@ public class FrameQuestion : FrameNarrative
     public override void SetData()
     {
         base.SetData();
+        SetNextQuestion();
+    }
+    
+    public override void HideData()
+    {
+        Debug.Log("hide data");
+    }
+
+    private void SetNextQuestion()
+    {
+        TapController.Instance.CanTap = false;
+        FrameController.Instance.CurrentQuestion = this;
+
+        List<string> variants = new List<string>();
+        foreach (var question in Questions)
+        {
+            variants.Add(question.TextQuestion);
+        }
+        UiController.Instance.ShowQuestionText(variants);
     }
 }
 

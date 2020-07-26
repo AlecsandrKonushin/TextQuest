@@ -30,7 +30,7 @@ public class TapController : Singleton<TapController>
         if (!UiController.Instance.ClickButton)
         {
             _timeCanTap = false;
-            GameController.Instance.NextPoint();
+            FrameController.Instance.NextPoint();
             yield return new WaitForSeconds(_timeBetweenTap);
             _timeCanTap = true;
         }

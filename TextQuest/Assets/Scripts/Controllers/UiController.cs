@@ -19,7 +19,7 @@ public class UiController : Singleton<UiController>
     [SerializeField] private Image characterImage;
     [SerializeField] private MyButton[] answerButtons;
     [SerializeField] private Text[] textsButtons;
-    
+
     [Space]
     [Header("Phone элементы")]
     [SerializeField] private SpriteRenderer messageButtonSpriteRen;
@@ -45,7 +45,7 @@ public class UiController : Singleton<UiController>
         questionPanel.SetActive(false);
         phonePanel.SetActive(false);
 
-        narrativeText.text = text;        
+        narrativeText.text = text;
 
         narrativePanel.SetActive(true);
         narrativeText.gameObject.SetActive(true);
@@ -67,26 +67,13 @@ public class UiController : Singleton<UiController>
         StartCoroutine(CoWaitShowUi());
     }
 
-    public void ShowQuestionText(List<string> variants, bool phoneAnswer)
+    public void ShowQuestionText(List<string> variants)
     {
-        phonePanel.SetActive(false);
-
-        if (phoneAnswer)
+        questionPanel.SetActive(true);
+        for (int i = 0; i < variants.Count; i++)
         {
-            for (int i = 0; i < variants.Count; i++)
-            {
-                textsAnswerButtons[i].text = variants[i];
-                answerButtons[i].gameObject.SetActive(true);
-            }
-        }
-        else
-        {
-            questionPanel.SetActive(true);
-            for (int i = 0; i < variants.Count; i++)
-            {
-                textsButtons[i].text = variants[i];
-                answerButtons[i].gameObject.SetActive(true);
-            }
+            textsButtons[i].text = variants[i];
+            answerButtons[i].gameObject.SetActive(true);
         }
 
         StartCoroutine(CoWaitShowUi());
@@ -101,7 +88,6 @@ public class UiController : Singleton<UiController>
     {
         if (reload)
         {
-            Debug.Log("reload");
             characterImage.GetComponent<Animator>().SetTrigger("hide");
             bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
             yield return new WaitForSeconds(timeChange);
@@ -165,8 +151,8 @@ public class UiController : Singleton<UiController>
 
     public void ClickAlertButton()
     {
-        if (GameController.Instance.PhoneMessage)
-            GameController.Instance.SetPhoneQuestion();
+        //if (FrameController.Instance.PhoneMessage)
+        //    FrameController.Instance.SetPhoneQuestion();
     }
 
     public void ShowPhonePanel(string[] messages, string nameSender)
@@ -183,7 +169,7 @@ public class UiController : Singleton<UiController>
     {
         ClickButton = true;
     }
-    
+
     public void ExitGame()
     {
         MainController.Instance.ExitGame();
@@ -192,6 +178,6 @@ public class UiController : Singleton<UiController>
     private IEnumerator CoWaitShowUi()
     {
         yield return new WaitForSeconds(.5f);
-        GameController.Instance.UiReady = true;
+        FrameController.Instance.UiReady = true;
     }
 }

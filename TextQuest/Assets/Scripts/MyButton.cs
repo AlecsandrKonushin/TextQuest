@@ -9,6 +9,6 @@ public class MyButton : MonoBehaviour
 
     private void OnMouseDown()
     {
-        GameController.Instance.ChooseButton(myNumber);
+        FrameController.Instance.ChooseButton(myNumber);
     }
 }
