@@ -2548,7 +2548,7 @@ GameObject:
   - component: {fileID: 1023775756}
   - component: {fileID: 1023775757}
   m_Layer: 0
-  m_Name: Game controller
+  m_Name: Frame controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2583,16 +2583,16 @@ MonoBehaviour:
   UiReady: 1
   Characters:
   - {fileID: 8616055237059778071, guid: 6c51af2772aadac44a01332bd234f637, type: 3}
-  - {fileID: 8616055237059778071, guid: 0fe9601db88221f4b8aeee1c0478cd45, type: 3}
-  - {fileID: 8616055237059778071, guid: a124ae1f73f0a884b85f0e3560626b78, type: 3}
   - {fileID: 8616055237059778071, guid: e4c366358048f534181a4f62bbea808c, type: 3}
+  - {fileID: 8616055237059778071, guid: a124ae1f73f0a884b85f0e3560626b78, type: 3}
+  - {fileID: 8616055237059778071, guid: 0fe9601db88221f4b8aeee1c0478cd45, type: 3}
   SpeakingCharacter: {fileID: 0}
   PrevSpeakingCharacter: {fileID: 0}
   CurrentFrame: {fileID: 0}
-  PrevFrame: {fileID: 0}
   CurrentQuestion: {fileID: 0}
   PositionSpriteleft: 0
   ReloadNarrative: 0
+  NewTypeFrame: 0
 --- !u!1 &1030588718
 GameObject:
   m_ObjectHideFlags: 0
@@ -2886,6 +2886,7 @@ MonoBehaviour:
   questionPanel: {fileID: 719372702}
   pausePanel: {fileID: 167320529}
   phonePanel: {fileID: 528874572}
+  bgNarrativePanel: {fileID: 1043992982}
   narrativeText: {fileID: 1469443212}
   bgCharacterName: {fileID: 1621574636}
   characterNameText: {fileID: 1001942093}
@@ -3763,7 +3764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1469443211
 RectTransform:
   m_ObjectHideFlags: 0

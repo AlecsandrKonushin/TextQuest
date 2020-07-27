@@ -98,17 +98,20 @@ public class FrameNarrative : FrameGame
         UiController uiCon = UiController.Instance;
         FrameController frameCon = FrameController.Instance;
 
-        if (frameCon.PrevSpeakingCharacter == null)
+        if (frameCon.PrevSpeakingCharacter == null || frameCon.NewTypeFrame)
             uiCon.ShowNarrativePanel(Text);
         else
             uiCon.ChangeNarrativeText(Text);
 
         frameCon.PrevSpeakingCharacter = frameCon.SpeakingCharacter;
+        frameCon.NewTypeFrame = false;
     }
 
     public override void HideData()
     {
-        Debug.Log("hide data");
+        UiController uiCon = UiController.Instance;
+        uiCon.HideNarrativePanel();
+        uiCon.HideSpeakingCharacter();
     }
 
     protected void CheckSpeakingCharacter()
@@ -156,7 +159,8 @@ public class FrameQuestion : FrameNarrative
     
     public override void HideData()
     {
-        Debug.Log("hide data");
+        base.HideData();
+        UiController.Instance.HideQuestions();
     }
 
     private void SetNextQuestion()

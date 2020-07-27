@@ -13,6 +13,7 @@ public class UiController : Singleton<UiController>
 
     [Space]
     [Header("Основные элементы Frame")]
+    [SerializeField] private Image bgNarrativePanel;
     [SerializeField] private Text narrativeText;
     [SerializeField] private GameObject bgCharacterName;
     [SerializeField] private Text characterNameText;
@@ -33,18 +34,18 @@ public class UiController : Singleton<UiController>
 
     public bool ClickButton = false;
     private Animator _animatorPanelNarrative;
-    private float timeChange = .5f;
+    private float timeHide = .5f;
+    private Color colorTextNarrative;
 
     private void Start()
     {
         _animatorPanelNarrative = narrativePanel.GetComponent<Animator>();
+        colorTextNarrative = narrativeText.color;
     }
 
+    #region Narrative panel
     public void ShowNarrativePanel(string text)
     {
-        questionPanel.SetActive(false);
-        phonePanel.SetActive(false);
-
         narrativeText.text = text;
 
         narrativePanel.SetActive(true);
@@ -61,38 +62,39 @@ public class UiController : Singleton<UiController>
     private IEnumerator CoChangeNarrativeText(string text)
     {
         _animatorPanelNarrative.SetTrigger("hideText");
-        yield return new WaitForSeconds(timeChange);
+        yield return new WaitForSeconds(timeHide);
         narrativeText.text = text;
         _animatorPanelNarrative.SetTrigger("showText");
         StartCoroutine(CoWaitShowUi());
     }
 
-    public void ShowQuestionText(List<string> variants)
+    public void HideNarrativePanel()
     {
-        questionPanel.SetActive(true);
-        for (int i = 0; i < variants.Count; i++)
-        {
-            textsButtons[i].text = variants[i];
-            answerButtons[i].gameObject.SetActive(true);
-        }
-
-        StartCoroutine(CoWaitShowUi());
+        StartCoroutine(CoHideNarrativePanel());
     }
 
+    private IEnumerator CoHideNarrativePanel()
+    {
+        narrativePanel.GetComponent<Animator>().SetTrigger("hidePanel");
+        yield return new WaitForSeconds(timeHide);
+        narrativePanel.SetActive(false);
+        bgNarrativePanel.color = Color.white;
+        narrativeText.color = colorTextNarrative;
+    }
+    #endregion
+
+    #region Character speaking
     public void ShowSpeakingCharacter(Character character, bool mainCharacter, bool reload)
     {
         StartCoroutine(CoShowSpeakingCharacter(character.Sprite, character.Name, mainCharacter, reload));
     }
 
-    private IEnumerator CoShowSpeakingCharacter(Sprite spriteCharacter, string nameCharacter, bool mainCharacter, bool reload)
+    public IEnumerator CoShowSpeakingCharacter(Sprite spriteCharacter, string nameCharacter, bool mainCharacter, bool reload)
     {
         if (reload)
         {
-            characterImage.GetComponent<Animator>().SetTrigger("hide");
-            bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
-            yield return new WaitForSeconds(timeChange);
-            characterImage.gameObject.SetActive(false);
-            bgCharacterName.gameObject.SetActive(false);
+            StartCoroutine(CoHideSpeakingCharacter());
+            yield return new WaitForSeconds(timeHide);
         }
 
         characterImage.sprite = spriteCharacter;
@@ -105,6 +107,20 @@ public class UiController : Singleton<UiController>
 
         characterImage.gameObject.SetActive(true);
         bgCharacterName.gameObject.SetActive(true);
+    }
+
+    public void HideSpeakingCharacter()
+    {
+        StartCoroutine(CoHideSpeakingCharacter());
+    }
+
+    private IEnumerator CoHideSpeakingCharacter()
+    {
+        characterImage.GetComponent<Animator>().SetTrigger("hide");
+        bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
+        yield return new WaitForSeconds(timeHide);
+        characterImage.gameObject.SetActive(false);
+        bgCharacterName.gameObject.SetActive(false);
     }
 
     private void ChangePositionCharacter(bool right)
@@ -124,11 +140,19 @@ public class UiController : Singleton<UiController>
             characterNameText.transform.localEulerAngles = new Vector3(0, 180);
         }
     }
+    #endregion
 
-    public void ShowPhonePanel()
+    #region Question panel
+    public void ShowQuestionText(List<string> variants)
     {
-        narrativePanel.SetActive(false);
-        questionPanel.SetActive(false);
+        questionPanel.SetActive(true);
+        for (int i = 0; i < variants.Count; i++)
+        {
+            textsButtons[i].text = variants[i];
+            answerButtons[i].gameObject.SetActive(true);
+        }
+
+        StartCoroutine(CoWaitShowUi());
     }
 
     public void HideQuestions()
@@ -139,11 +163,15 @@ public class UiController : Singleton<UiController>
             question.gameObject.SetActive(false);
         }
     }
+    #endregion
+
+    public void ShowPhonePanel()
+    {
+    }
+
 
     public void ShowPhoneAlert()
     {
-        narrativePanel.SetActive(false);
-        questionPanel.SetActive(false);
         HideQuestions();
 
         alertMessage.SetActive(true);

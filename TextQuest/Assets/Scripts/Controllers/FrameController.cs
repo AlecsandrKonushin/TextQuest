@@ -13,6 +13,7 @@ public class FrameController : Singleton<FrameController>
     public FrameQuestion CurrentQuestion;
     public bool PositionSpriteleft;
     public bool ReloadNarrative;
+    public bool NewTypeFrame;
 
     private PartGame _currentPart;
     private int _counterFrames;
@@ -55,6 +56,7 @@ public class FrameController : Singleton<FrameController>
 
     private IEnumerator CoHidePrevFrame()
     {
+        NewTypeFrame = true;
         _currentPart.Frames[_counterFrames - 1].HideData();
         yield return new WaitForSeconds(.5f);
         CurrentFrame.SetData();
