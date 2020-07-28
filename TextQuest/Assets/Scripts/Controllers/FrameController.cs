@@ -47,7 +47,10 @@ public class FrameController : Singleton<FrameController>
         if (_counterFrames > 0 && _currentPart.Frames[_counterFrames - 1].GetType() != _currentPart.Frames[_counterFrames].GetType())
             StartCoroutine(CoHidePrevFrame());
         else
+        {
+            StartCoroutine(UiController.Instance.CoWaitShowUi(.5f));
             CurrentFrame.SetData();
+        }
 
         _counterFrames++;
         if (_counterFrames >= _currentPart.Frames.Length)
@@ -56,6 +59,7 @@ public class FrameController : Singleton<FrameController>
 
     private IEnumerator CoHidePrevFrame()
     {
+        StartCoroutine(UiController.Instance.CoWaitShowUi(1f));
         NewTypeFrame = true;
         _currentPart.Frames[_counterFrames - 1].HideData();
         yield return new WaitForSeconds(.5f);

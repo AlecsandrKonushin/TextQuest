@@ -22,10 +22,13 @@ public class UiController : Singleton<UiController>
     [SerializeField] private Text[] textsButtons;
 
     [Space]
+    [Header("Message button элементы")]
+    [SerializeField] private Image messageButtonSprite;
+    [SerializeField] private Sprite[] spritesMessage;
+    [SerializeField] private GameObject panelNewMessage;
+
+    [Space]
     [Header("Phone элементы")]
-    [SerializeField] private SpriteRenderer messageButtonSpriteRen;
-    [SerializeField] private Sprite[] messageButtonSprites;
-    [SerializeField] private GameObject alertMessage;
     [SerializeField] private GameObject[] messages;
     [SerializeField] private Text[] messagesTexts;
     [SerializeField] private Text[] nameSenderTexts;
@@ -50,8 +53,6 @@ public class UiController : Singleton<UiController>
 
         narrativePanel.SetActive(true);
         narrativeText.gameObject.SetActive(true);
-
-        StartCoroutine(CoWaitShowUi());
     }
 
     public void ChangeNarrativeText(string text)
@@ -65,7 +66,6 @@ public class UiController : Singleton<UiController>
         yield return new WaitForSeconds(timeHide);
         narrativeText.text = text;
         _animatorPanelNarrative.SetTrigger("showText");
-        StartCoroutine(CoWaitShowUi());
     }
 
     public void HideNarrativePanel()
@@ -84,23 +84,13 @@ public class UiController : Singleton<UiController>
     #endregion
 
     #region Character speaking
-    public void ShowSpeakingCharacter(Character character, bool mainCharacter, bool reload)
+    public void ShowSpeakingCharacter()
     {
-        StartCoroutine(CoShowSpeakingCharacter(character.Sprite, character.Name, mainCharacter, reload));
-    }
+        Character character = FrameController.Instance.SpeakingCharacter;
+        characterImage.sprite = character.Sprite;
+        characterNameText.text = character.Name;
 
-    public IEnumerator CoShowSpeakingCharacter(Sprite spriteCharacter, string nameCharacter, bool mainCharacter, bool reload)
-    {
-        if (reload)
-        {
-            StartCoroutine(CoHideSpeakingCharacter());
-            yield return new WaitForSeconds(timeHide);
-        }
-
-        characterImage.sprite = spriteCharacter;
-        characterNameText.text = nameCharacter;
-
-        if (mainCharacter)
+        if (FrameController.Instance.PositionSpriteleft)
             ChangePositionCharacter(false);
         else
             ChangePositionCharacter(true);
@@ -109,18 +99,28 @@ public class UiController : Singleton<UiController>
         bgCharacterName.gameObject.SetActive(true);
     }
 
-    public void HideSpeakingCharacter()
+    public void HideSpeakingCharacter(bool reload)
     {
-        StartCoroutine(CoHideSpeakingCharacter());
+        StartCoroutine(CoHideSpeakingCharacter(reload));
     }
 
-    private IEnumerator CoHideSpeakingCharacter()
+    private IEnumerator CoReloadCharacterSprite()
+    {
+        characterImage.GetComponent<Animator>().SetTrigger("hide");
+        bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
+        yield return new WaitForSeconds(timeHide);
+    }
+
+    private IEnumerator CoHideSpeakingCharacter(bool reload)
     {
         characterImage.GetComponent<Animator>().SetTrigger("hide");
         bgCharacterName.GetComponent<Animator>().SetTrigger("hide");
         yield return new WaitForSeconds(timeHide);
         characterImage.gameObject.SetActive(false);
         bgCharacterName.gameObject.SetActive(false);
+
+        if (reload)
+            ShowSpeakingCharacter();
     }
 
     private void ChangePositionCharacter(bool right)
@@ -151,8 +151,6 @@ public class UiController : Singleton<UiController>
             textsButtons[i].text = variants[i];
             answerButtons[i].gameObject.SetActive(true);
         }
-
-        StartCoroutine(CoWaitShowUi());
     }
 
     public void HideQuestions()
@@ -165,18 +163,28 @@ public class UiController : Singleton<UiController>
     }
     #endregion
 
-    public void ShowPhonePanel()
+    #region Alert message
+    public void ShowAlertMesage()
     {
+        panelNewMessage.SetActive(true);
+        messageButtonSprite.sprite = spritesMessage[1];
     }
 
-
-    public void ShowPhoneAlert()
+    public void HideAlertMessage()
     {
-        HideQuestions();
-
-        alertMessage.SetActive(true);
+        StartCoroutine(CoHideAlertMessage());
     }
 
+    private IEnumerator CoHideAlertMessage()
+    {
+        panelNewMessage.GetComponent<Animator>().SetTrigger("hide");
+        messageButtonSprite.sprite = spritesMessage[0];
+        yield return new WaitForSeconds(.5f);
+        panelNewMessage.SetActive(false);
+    }
+    #endregion
+
+    #region Phone question
     public void ClickAlertButton()
     {
         //if (FrameController.Instance.PhoneMessage)
@@ -192,6 +200,8 @@ public class UiController : Singleton<UiController>
             nameSenderTexts[i].text = nameSender;
         }
     }
+    #endregion
+
 
     public void ClickAnyButton()
     {
@@ -203,9 +213,9 @@ public class UiController : Singleton<UiController>
         MainController.Instance.ExitGame();
     }
 
-    private IEnumerator CoWaitShowUi()
+    public IEnumerator CoWaitShowUi(float time)
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(time);
         FrameController.Instance.UiReady = true;
     }
 }

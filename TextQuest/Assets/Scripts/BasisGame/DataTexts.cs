@@ -17,7 +17,7 @@ public class DataTexts : Singleton<DataTexts>
     private void CreateFirstPart()
     {
         FirstPart = new PartGame(1,
-            new FrameGame[10] {
+            new FrameGame[11] {
             new FrameNarrative(Characters[0], CharacterState.Smile, "Это был обычный летний день, когда почти все экзамены сданы, и можно немного расслабиться на перемене."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Я Джейк Сандерс, а это мои одноклассники и по совместительству лучшие друзья: Ханна, Лилла и Мэтью."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Мы достаточно разные, но нам хорошо вместе и очень весело."),
@@ -35,7 +35,8 @@ public class DataTexts : Singleton<DataTexts>
             new FrameNarrative(Characters[0], CharacterState.Smile, "Ладно, какой у нас следующий урок?"),
             new FrameNarrative(Characters[2], CharacterState.Smile, "Вроде физика."),
             new FrameNarrative(Characters[3], CharacterState.Smile, "Ээхх…. Еще есть 15 минут на свободе…"),
-            new FramePhone(Characters[1], CharacterState.Smile, "",
+            new FrameAlertMessage(),
+            new FramePhone(Characters[5], CharacterState.Smile, "",
                 new Question[3]
                 {
                     new Question("Ок."),
@@ -52,11 +53,6 @@ public class DataTexts : Singleton<DataTexts>
     }
 }
 
-public enum TypeFrame
-{
-    Narrative
-}
-
 public class PartGame
 {
     public int NumberPart;
@@ -71,8 +67,6 @@ public class PartGame
 
 public abstract class FrameGame : MonoBehaviour
 {
-    public TypeFrame Type;
-
     public abstract void SetData();
     public abstract void HideData();
 }
@@ -85,7 +79,6 @@ public class FrameNarrative : FrameGame
 
     public FrameNarrative(Character character, CharacterState state, string text)
     {
-        Type = TypeFrame.Narrative;
         Character = character;
         StateCharacter = state;
         Text = text;
@@ -111,7 +104,7 @@ public class FrameNarrative : FrameGame
     {
         UiController uiCon = UiController.Instance;
         uiCon.HideNarrativePanel();
-        uiCon.HideSpeakingCharacter();
+        uiCon.HideSpeakingCharacter(false);
     }
 
     protected void CheckSpeakingCharacter()
@@ -138,7 +131,10 @@ public class FrameNarrative : FrameGame
             frameCon.PositionSpriteleft = true;
 
         Character nowCharacter = frameCon.SpeakingCharacter;
-        UiController.Instance.ShowSpeakingCharacter(nowCharacter, frameCon.PositionSpriteleft, frameCon.ReloadNarrative);
+        if (frameCon.ReloadNarrative && !frameCon.NewTypeFrame)
+            UiController.Instance.HideSpeakingCharacter(true);
+        else
+            UiController.Instance.ShowSpeakingCharacter();
     }
 }
 
@@ -156,7 +152,7 @@ public class FrameQuestion : FrameNarrative
         base.SetData();
         SetNextQuestion();
     }
-    
+
     public override void HideData()
     {
         base.HideData();
@@ -186,6 +182,19 @@ public class FrameAnswer : FrameNarrative
     {
         Answers = answers;
         States = states;
+    }
+}
+
+public class FrameAlertMessage :FrameGame
+{
+    public override void SetData()
+    {
+        UiController.Instance.ShowAlertMesage();
+    }
+
+    public override void HideData()
+    {
+        UiController.Instance.HideAlertMessage();
     }
 }
 
