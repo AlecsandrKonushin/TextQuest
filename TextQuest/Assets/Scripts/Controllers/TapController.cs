@@ -13,17 +13,7 @@ public class TapController : Singleton<TapController>
             if (Input.GetMouseButtonDown(0))
                 StartCoroutine(CoWaitTap());
     }
-
-    //private void OnMouseDown()
-    //{
-    //    if (MainController.Instance.CanTap && _timeCanTap && CanTap)
-    //        if (Input.GetMouseButtonDown(0))
-    //        {
-    //            StartCoroutine(CoWaitTap());
-    //            GameController.Instance.NextPoint();
-    //        }
-    //}
-
+    
     private IEnumerator CoWaitTap()
     {
         yield return null;

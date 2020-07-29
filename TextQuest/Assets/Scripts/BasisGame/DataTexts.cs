@@ -36,7 +36,7 @@ public class DataTexts : Singleton<DataTexts>
             new FrameNarrative(Characters[2], CharacterState.Smile, "Вроде физика."),
             new FrameNarrative(Characters[3], CharacterState.Smile, "Ээхх…. Еще есть 15 минут на свободе…"),
             new FrameAlertMessage(),
-            new FramePhone(Characters[5], CharacterState.Smile, "",
+            new FramePhone(Characters[4], CharacterState.Smile, "",
                 new Question[3]
                 {
                     new Question("Ок."),
@@ -189,12 +189,13 @@ public class FrameAlertMessage :FrameGame
 {
     public override void SetData()
     {
+        TapController.Instance.CanTap = false;
         UiController.Instance.ShowAlertMesage();
     }
 
     public override void HideData()
     {
-        UiController.Instance.HideAlertMessage();
+        TapController.Instance.CanTap = true;
     }
 }
 
@@ -208,8 +209,12 @@ public class FramePhone : FrameQuestion
         Messages = messages;
         NameSender = nameSender;
     }
-}
 
+    public override void SetData()
+    {
+        Debug.Log("phone quest");
+    }
+}
 
 public class Question
 {

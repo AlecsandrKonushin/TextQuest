@@ -170,17 +170,15 @@ public class UiController : Singleton<UiController>
         messageButtonSprite.sprite = spritesMessage[1];
     }
 
-    public void HideAlertMessage()
+    public void DefaultSpriteButtonMessage()
     {
-        StartCoroutine(CoHideAlertMessage());
+        messageButtonSprite.sprite = spritesMessage[0];
     }
 
-    private IEnumerator CoHideAlertMessage()
+    public void ClickButtonMessage()
     {
-        panelNewMessage.GetComponent<Animator>().SetTrigger("hide");
-        messageButtonSprite.sprite = spritesMessage[0];
-        yield return new WaitForSeconds(.5f);
         panelNewMessage.SetActive(false);
+        messageButtonSprite.sprite = spritesMessage[2];
     }
     #endregion
 
@@ -201,7 +199,6 @@ public class UiController : Singleton<UiController>
         }
     }
     #endregion
-
 
     public void ClickAnyButton()
     {
