@@ -87,14 +87,9 @@ public class FrameNarrative : FrameGame
     public override void SetData()
     {
         CheckSpeakingCharacter();
+        ShowPanel();
 
-        UiController uiCon = UiController.Instance;
         FrameController frameCon = FrameController.Instance;
-
-        if (frameCon.PrevSpeakingCharacter == null || frameCon.NewTypeFrame)
-            uiCon.ShowNarrativePanel(Text);
-        else
-            uiCon.ChangeNarrativeText(Text);
 
         frameCon.PrevSpeakingCharacter = frameCon.SpeakingCharacter;
         frameCon.NewTypeFrame = false;
@@ -105,6 +100,17 @@ public class FrameNarrative : FrameGame
         UiController uiCon = UiController.Instance;
         uiCon.HideNarrativePanel();
         uiCon.HideSpeakingCharacter(false);
+    }
+
+    protected virtual void ShowPanel()
+    {
+        UiController uiCon = UiController.Instance;
+        FrameController frameCon = FrameController.Instance;
+
+        if (frameCon.PrevSpeakingCharacter == null || frameCon.NewTypeFrame)
+            uiCon.ShowNarrativePanel(Text);
+        else
+            uiCon.ChangeNarrativeText(Text);
     }
 
     protected void CheckSpeakingCharacter()
@@ -155,8 +161,10 @@ public class FrameQuestion : FrameNarrative
 
     public override void HideData()
     {
-        base.HideData();
-        UiController.Instance.HideQuestions();
+        UiController uiCon = UiController.Instance;
+        uiCon.HideSpeakingCharacter(false);
+        uiCon.HideQuestionPanel();
+        uiCon.HideQuestions();
     }
 
     private void SetNextQuestion()
@@ -170,6 +178,11 @@ public class FrameQuestion : FrameNarrative
             variants.Add(question.TextQuestion);
         }
         UiController.Instance.ShowQuestionText(variants);
+    }
+
+    protected override void ShowPanel()
+    {
+        UiController.Instance.ShowQuestionPanel(Text);
     }
 }
 
@@ -185,7 +198,7 @@ public class FrameAnswer : FrameNarrative
     }
 }
 
-public class FrameAlertMessage :FrameGame
+public class FrameAlertMessage : FrameGame
 {
     public override void SetData()
     {

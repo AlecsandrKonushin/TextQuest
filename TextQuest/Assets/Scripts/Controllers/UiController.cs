@@ -12,12 +12,20 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject phonePanel;
 
     [Space]
-    [Header("Основные элементы Frame")]
+    [Header("Narrative элементы")]
     [SerializeField] private Image bgNarrativePanel;
     [SerializeField] private Text narrativeText;
+    
+    [Space]
+    [Header("Character элементы")]
     [SerializeField] private GameObject bgCharacterName;
     [SerializeField] private Text characterNameText;
     [SerializeField] private Image characterImage;
+
+    [Space]
+    [Header("Questions элементы")]
+    [SerializeField] private Image bgQuestionPanel;
+    [SerializeField] private Text questionText;
     [SerializeField] private MyButton[] answerButtons;
     [SerializeField] private Text[] textsButtons;
 
@@ -34,6 +42,14 @@ public class UiController : Singleton<UiController>
     [SerializeField] private Text[] nameSenderTexts;
     [SerializeField] private MyButton[] phoneAnswerButtons;
     [SerializeField] private Text[] textsAnswerButtons;
+
+    [Space]
+    [Header("Позиции")]
+    [SerializeField] private Vector2 rightBgName;
+    [SerializeField] private Vector2 leftBgName;
+    [SerializeField] private Vector2 rightCharacterImage;
+    [SerializeField] private Vector2 leftCharacterImage;
+
 
     public bool ClickButton = false;
     private Animator _animatorPanelNarrative;
@@ -127,15 +143,15 @@ public class UiController : Singleton<UiController>
     {
         if (right)
         {
-            bgCharacterName.transform.localPosition = new Vector2(125, -190);
-            characterImage.transform.localPosition = new Vector2(250, 205);
+            bgCharacterName.transform.localPosition = rightBgName;
+            characterImage.transform.localPosition = rightCharacterImage;
             bgCharacterName.transform.localEulerAngles = new Vector2(0, 0);
             characterNameText.transform.localEulerAngles = new Vector3(0, 0);
         }
         else
         {
-            bgCharacterName.transform.localPosition = new Vector2(-130, -190);
-            characterImage.transform.localPosition = new Vector2(-270, 185);
+            bgCharacterName.transform.localPosition = leftBgName;
+            characterImage.transform.localPosition = leftCharacterImage;
             bgCharacterName.transform.localEulerAngles = new Vector2(0, 180);
             characterNameText.transform.localEulerAngles = new Vector3(0, 180);
         }
@@ -143,6 +159,28 @@ public class UiController : Singleton<UiController>
     #endregion
 
     #region Question panel
+    public void ShowQuestionPanel(string text)
+    {
+        questionText.text = text;
+
+        questionPanel.SetActive(true);
+        questionText.gameObject.SetActive(true);
+    }
+    
+    public void HideQuestionPanel()
+    {
+        StartCoroutine(CoHideQuestionPanel());
+    }
+
+    private IEnumerator CoHideQuestionPanel()
+    {
+        questionPanel.GetComponent<Animator>().SetTrigger("hidePanel");
+        yield return new WaitForSeconds(timeHide);
+        questionPanel.SetActive(false);
+        bgQuestionPanel.color = Color.white;
+        narrativeText.color = colorTextNarrative;
+    }
+
     public void ShowQuestionText(List<string> variants)
     {
         questionPanel.SetActive(true);
