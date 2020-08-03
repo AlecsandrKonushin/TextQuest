@@ -7,9 +7,10 @@ public class UiController : Singleton<UiController>
 {
     [Header("Панели")]
     [SerializeField] private GameObject narrativePanel;
-    [SerializeField] private GameObject questionPanel;
-    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject narrativeQuestionPanel;
+    [SerializeField] private GameObject questionsPanel;
     [SerializeField] private GameObject phonePanel;
+    [SerializeField] private GameObject pausePanel;
 
     [Space]
     [Header("Narrative элементы")]
@@ -26,7 +27,7 @@ public class UiController : Singleton<UiController>
     [Header("Questions элементы")]
     [SerializeField] private Image bgQuestionPanel;
     [SerializeField] private Text questionText;
-    [SerializeField] private MyButton[] answerButtons;
+    [SerializeField] private QuestionButton[] answerButtons;
     [SerializeField] private Text[] textsButtons;
 
     [Space]
@@ -163,7 +164,7 @@ public class UiController : Singleton<UiController>
     {
         questionText.text = text;
 
-        questionPanel.SetActive(true);
+        narrativeQuestionPanel.SetActive(true);
         questionText.gameObject.SetActive(true);
     }
     
@@ -174,16 +175,28 @@ public class UiController : Singleton<UiController>
 
     private IEnumerator CoHideQuestionPanel()
     {
-        questionPanel.GetComponent<Animator>().SetTrigger("hidePanel");
+        narrativeQuestionPanel.GetComponent<Animator>().SetTrigger("hide");
+        questionsPanel.GetComponent<Animator>().SetTrigger("hide");
         yield return new WaitForSeconds(timeHide);
-        questionPanel.SetActive(false);
-        bgQuestionPanel.color = Color.white;
-        narrativeText.color = colorTextNarrative;
+        narrativeQuestionPanel.SetActive(false);
+        questionsPanel.SetActive(false);
+
+        foreach (var text in textsButtons)
+        {
+            text.color = Color.white;
+        }
+        foreach (var button in answerButtons)
+        {
+            button.gameObject.GetComponent<Image>().color = Color.white;
+        }
+        //bgQuestionPanel.color = Color.white;
+        // narrativeText.color = colorTextNarrative;
     }
 
     public void ShowQuestionText(List<string> variants)
     {
-        questionPanel.SetActive(true);
+        questionsPanel.SetActive(true);
+
         for (int i = 0; i < variants.Count; i++)
         {
             textsButtons[i].text = variants[i];
@@ -193,7 +206,7 @@ public class UiController : Singleton<UiController>
 
     public void HideQuestions()
     {
-        questionPanel.SetActive(false);
+        narrativeQuestionPanel.SetActive(false);
         foreach (var question in answerButtons)
         {
             question.gameObject.SetActive(false);
@@ -221,13 +234,7 @@ public class UiController : Singleton<UiController>
     #endregion
 
     #region Phone question
-    public void ClickAlertButton()
-    {
-        //if (FrameController.Instance.PhoneMessage)
-        //    FrameController.Instance.SetPhoneQuestion();
-    }
-
-    public void ShowPhonePanel(string[] messages, string nameSender)
+    public void ShowPhonePanel(string[] messages, string nameSender, List<string> answers)
     {
         for (int i = 0; i < messages.Length; i++)
         {
@@ -235,6 +242,14 @@ public class UiController : Singleton<UiController>
             messagesTexts[i].text = messages[i];
             nameSenderTexts[i].text = nameSender;
         }
+
+        for (int i = 0; i < answers.Count; i++)
+        {
+            answerButtons[i].gameObject.SetActive(true);
+            textsAnswerButtons[i].text = answers[i];
+        }
+
+        phonePanel.SetActive(true);
     }
     #endregion
 

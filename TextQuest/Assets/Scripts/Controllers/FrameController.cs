@@ -95,7 +95,7 @@ public class FrameController : Singleton<FrameController>
         if (!UiReady)
             return;
 
-        Question question = CurrentQuestion.Questions[numberButton];
+        Answer question = CurrentQuestion.Answers[numberButton];
 
         if (question.InfluencedCharacterName != null)
         {
