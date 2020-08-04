@@ -10,7 +10,7 @@ public class FrameController : Singleton<FrameController>
     public Character SpeakingCharacter;
     public Character PrevSpeakingCharacter;
     public FrameGame CurrentFrame;
-    public FrameQuestion CurrentQuestion;
+    public List<Answer> CurrentAnswers;
     public bool PositionSpriteleft;
     public bool ReloadNarrative;
     public bool NewTypeFrame;
@@ -95,31 +95,38 @@ public class FrameController : Singleton<FrameController>
         if (!UiReady)
             return;
 
-        Answer question = CurrentQuestion.Answers[numberButton];
+        Answer answer = CurrentAnswers[numberButton];
 
-        if (question.InfluencedCharacterName != null)
+        if (answer.InfluencedCharacterName != null)
         {
             MainCharacter.ChangeCommunication(
-                question.InfluencedCharacterName,
-                question.InfluenceForCharacter);
+                answer.InfluencedCharacterName,
+                answer.InfluenceForCharacter);
         }
 
-        if (question.InfluenceForGame != null)
+        if (answer.InfluenceForGame != null)
         {
-            InfluenceForGame.Add(question.InfluenceForGame, question.ValueInfluenceForGame);
+            InfluenceForGame.Add(answer.InfluenceForGame, answer.ValueInfluenceForGame);
         }
 
-        if (_currentPart.Frames[_counterFrames] is FrameAnswer)
+        if (_currentPart.Frames[_counterFrames] is FrameAfterAnswer)
         {
-            FrameAnswer frame = _currentPart.Frames[_counterFrames] as FrameAnswer;
-            frame.Text = frame.Answers[numberButton];
-            frame.StateCharacter = frame.States[numberButton];
+
+            if (_currentPart.Frames[_counterFrames - 1] is FrameQuestion)
+            {
+                FrameAfterAnswer frame = _currentPart.Frames[_counterFrames] as FrameAfterAnswer;
+                frame.Text = frame.AfterAnswers[numberButton];
+                frame.StateCharacter = frame.States[numberButton];
+                UiController.Instance.HideQuestions();
+                NextPoint();
+            }
+            else if(_currentPart.Frames[_counterFrames - 1] is FramePhone)
+            {
+                UiController.Instance.
+            }            
         }
 
-        UiController.Instance.HideQuestions();
         TapController.Instance.CanTap = true;
-
-        NextPoint();
     }
 
 }

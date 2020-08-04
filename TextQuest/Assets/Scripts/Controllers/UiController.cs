@@ -43,6 +43,9 @@ public class UiController : Singleton<UiController>
     [SerializeField] private Text[] nameSenderTexts;
     [SerializeField] private MyButton[] phoneAnswerButtons;
     [SerializeField] private Text[] textsAnswerButtons;
+    [SerializeField] private GameObject phoneAnswerPanel;
+    [SerializeField] private GameObject answerMessage;
+    [SerializeField] private Text textAnswerMessage;
 
     [Space]
     [Header("Позиции")]
@@ -250,6 +253,20 @@ public class UiController : Singleton<UiController>
         }
 
         phonePanel.SetActive(true);
+    }
+
+    public void ChooseAnswerMessage(string textAnswer)
+    {
+        textAnswerMessage.text = textAnswer;
+        StartCoroutine(CoHidePhoneAnswers());
+    }
+
+    private IEnumerator CoHidePhoneAnswers()
+    {
+        phonea
+        yield return new WaitForSeconds(timeHide);
+        answerMessage.SetActive(true);
+
     }
     #endregion
 

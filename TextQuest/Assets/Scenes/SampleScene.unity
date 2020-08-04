@@ -1361,7 +1361,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &528874573
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2949,7 +2949,6 @@ MonoBehaviour:
   SpeakingCharacter: {fileID: 0}
   PrevSpeakingCharacter: {fileID: 0}
   CurrentFrame: {fileID: 0}
-  CurrentQuestion: {fileID: 0}
   PositionSpriteleft: 0
   ReloadNarrative: 0
   NewTypeFrame: 0
@@ -3193,6 +3192,8 @@ MonoBehaviour:
   - {fileID: 329419898}
   - {fileID: 497348013}
   - {fileID: 690232958}
+  answerMessage: {fileID: 0}
+  textAnswerMessage: {fileID: 0}
   rightBgName: {x: 125, y: -140}
   leftBgName: {x: -125, y: -140}
   rightCharacterImage: {x: 260, y: 220}

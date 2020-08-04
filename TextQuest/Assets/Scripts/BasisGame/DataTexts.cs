@@ -24,13 +24,13 @@ public class DataTexts : Singleton<DataTexts>
             new FrameNarrative(Characters[0], CharacterState.Smile, "Мы достаточно разные, но нам хорошо вместе и очень весело."),
             new FrameNarrative(Characters[1], CharacterState.Smile, "Джейк! Ты чего опять задумался?"),
              new FrameQuestion(Characters[0], CharacterState.Smile, "А? Да я засмотрелся на этот одуванчик... он напоминает мне..." ,
-                new Answer[3]
+                new List<Answer>
                 {
                     new Answer( "Лужайку у дома, в котором мы жили летом у бабушки.", Characters[1].Name, 2, "treeChange", false ),
                     new Answer( "Как всё в этом мире быстротечно", Characters[1].Name, 1, "treeChange", true),
                     new Answer( "ТВОЮ ПРИЧЁСКУ, когда ты неудачно подстриглась в прошлом году!", Characters[1].Name, 0 ),
                 }),
-            new FrameAnswer(Characters[1], CharacterState.Smile, "",
+            new FrameAfterAnswer(Characters[1], CharacterState.Smile, "",
                 new string[3]{ "Я помню ее, она была очень доброй…", "Джейк, смотри на мир позитивнее.", "Ну ты гад! Это было ужасно!"},
                 new CharacterState[3]{ CharacterState.Smile, CharacterState.Smile, CharacterState.Hate}),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Ладно, какой у нас следующий урок?"),
@@ -43,7 +43,7 @@ public class DataTexts : Singleton<DataTexts>
                     "еда в холодильнике,",
                     "не засиживайся допоздна за компьютером, целую."},
                 Characters[4].name,
-                new Answer[3]
+                new List<Answer>
                 {
                     new Answer("Ок", Characters[4].name, 0),
                     new Answer("Хорошо, легкой тебе смены.", Characters[4].name, 1),
@@ -148,9 +148,9 @@ public class FrameNarrative : FrameGame
 
 public class FrameQuestion : FrameNarrative
 {
-    public Answer[] Answers;
+    public List<Answer> Answers;
 
-    public FrameQuestion(Character character, CharacterState state, string text, Answer[] answers) : base(character, state, text)
+    public FrameQuestion(Character character, CharacterState state, string text, List<Answer> answers) : base(character, state, text)
     {
         Answers = answers;
     }
@@ -172,7 +172,7 @@ public class FrameQuestion : FrameNarrative
     private void SetNextQuestion()
     {
         TapController.Instance.CanTap = false;
-        FrameController.Instance.CurrentQuestion = this;
+        FrameController.Instance.CurrentAnswers = Answers;
 
         List<string> variants = new List<string>();
         foreach (var question in Answers)
@@ -188,14 +188,14 @@ public class FrameQuestion : FrameNarrative
     }
 }
 
-public class FrameAnswer : FrameNarrative
+public class FrameAfterAnswer : FrameNarrative
 {
-    public string[] Answers;
+    public string[] AfterAnswers;
     public CharacterState[] States;
 
-    public FrameAnswer(Character character, CharacterState state, string text, string[] answers, CharacterState[] states) : base(character, state, text)
+    public FrameAfterAnswer(Character character, CharacterState state, string text, string[] afterAnswers, CharacterState[] states) : base(character, state, text)
     {
-        Answers = answers;
+        AfterAnswers = afterAnswers;
         States = states;
     }
 }
@@ -217,16 +217,15 @@ public class FramePhone : FrameGame
 {
     public string[] Messages;
     public string NameSender;
-    public Answer[] Answers;
+    public List<Answer> Answers;
 
-    public FramePhone(string[] messages, string nameSender, Answer[] answers)
+    public FramePhone(string[] messages, string nameSender, List<Answer> answers)
     {
         Messages = messages;
         NameSender = nameSender;
         Answers = answers;
     }
-
-
+    
     public override void SetData()
     {
         List<string> textsAnswers = new List<string>();

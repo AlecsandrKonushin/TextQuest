@@ -112,10 +112,10 @@ MonoBehaviour:
     y: 30
     width: 1536
     height: 731
-  m_MinSize: {x: 678, y: 342}
+  m_MinSize: {x: 679, y: 342}
   m_MaxSize: {x: 12004, y: 8042}
   vertical: 0
-  controlID: 114
+  controlID: 123
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -137,10 +137,10 @@ MonoBehaviour:
     y: 0
     width: 1103
     height: 731
-  m_MinSize: {x: 402, y: 342}
+  m_MinSize: {x: 403, y: 342}
   m_MaxSize: {x: 8003, y: 8042}
   vertical: 1
-  controlID: 139
+  controlID: 124
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -162,10 +162,10 @@ MonoBehaviour:
     y: 0
     width: 1103
     height: 429
-  m_MinSize: {x: 402, y: 221}
-  m_MaxSize: {x: 8002, y: 4021}
+  m_MinSize: {x: 403, y: 221}
+  m_MaxSize: {x: 8003, y: 4021}
   vertical: 0
-  controlID: 140
+  controlID: 125
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_MinSize: {x: 203, y: 121}
   m_MaxSize: {x: 8003, y: 4021}
   vertical: 0
-  controlID: 120
+  controlID: 105
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -447,9 +447,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 90340000
-      m_LastClickedID: 13456
-      m_ExpandedIDs: 60fbffff5034000090340000c0340000ec340000f2350000
+      m_SelectedIDs: 42350000
+      m_LastClickedID: 13634
+      m_ExpandedIDs: 60fbffff8e340000be340000ec350000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -785,34 +785,34 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Ui
+    - Assets/Scripts/BasisGame
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Ui
+  - Assets/Scripts/BasisGame
   m_LastFoldersGridSize: -1
   m_LastProjectPath: F:\UnityProjects\TextQUest\TextQuest
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 123}
-    m_SelectedIDs: e2370000
-    m_LastClickedID: 14306
-    m_ExpandedIDs: 0000000090370000923700009437000096370000a4370000
+    scrollPos: {x: 0, y: 15}
+    m_SelectedIDs: a4370000
+    m_LastClickedID: 14244
+    m_ExpandedIDs: 0000000090370000923700009437000096370000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: contacts
-      m_OriginalName: contacts
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 14254
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 12}
     m_SearchString: 
@@ -851,8 +851,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 30350000
-    m_LastClickedInstanceID: 13616
+    m_SelectedInstanceIDs: 
+    m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300008c7e0000a0300000f64e0000e23b0000d6480000ec4800006e490000da320000182d0000307402008a130300f03200005e8f0000c0d301008c340000e24700005a260000905c00007a3100006ce80000b4310000da6700005e600000e6b90000d6320000724a0000a84900007c4100004a950000aa3b00001045000080550000e03a0000e23a000000000000b4360000
     m_RenameOverlay:
