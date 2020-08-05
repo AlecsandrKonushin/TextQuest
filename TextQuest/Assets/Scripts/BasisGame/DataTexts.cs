@@ -234,6 +234,7 @@ public class FramePhone : FrameGame
             textsAnswers.Add(answer.TextAnswer);
         }
 
+        FrameController.Instance.CurrentAnswers = Answers;
         UiController.Instance.ShowPhonePanel(Messages, NameSender, textsAnswers);
     }
 

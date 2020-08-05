@@ -10,6 +10,7 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject narrativeQuestionPanel;
     [SerializeField] private GameObject questionsPanel;
     [SerializeField] private GameObject phonePanel;
+    [SerializeField] private GameObject phoneAnswerPanel;
     [SerializeField] private GameObject pausePanel;
 
     [Space]
@@ -27,7 +28,7 @@ public class UiController : Singleton<UiController>
     [Header("Questions элементы")]
     [SerializeField] private Image bgQuestionPanel;
     [SerializeField] private Text questionText;
-    [SerializeField] private QuestionButton[] answerButtons;
+    [SerializeField] private AnswerButton[] answerButtons;
     [SerializeField] private Text[] textsButtons;
 
     [Space]
@@ -43,7 +44,6 @@ public class UiController : Singleton<UiController>
     [SerializeField] private Text[] nameSenderTexts;
     [SerializeField] private MyButton[] phoneAnswerButtons;
     [SerializeField] private Text[] textsAnswerButtons;
-    [SerializeField] private GameObject phoneAnswerPanel;
     [SerializeField] private GameObject answerMessage;
     [SerializeField] private Text textAnswerMessage;
 
@@ -192,8 +192,6 @@ public class UiController : Singleton<UiController>
         {
             button.gameObject.GetComponent<Image>().color = Color.white;
         }
-        //bgQuestionPanel.color = Color.white;
-        // narrativeText.color = colorTextNarrative;
     }
 
     public void ShowQuestionText(List<string> variants)
@@ -252,21 +250,29 @@ public class UiController : Singleton<UiController>
             textsAnswerButtons[i].text = answers[i];
         }
 
+        StartCoroutine(CoShowPhonePanel());
+    }
+
+    public IEnumerator CoShowPhonePanel()
+    {
         phonePanel.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        phoneAnswerPanel.SetActive(true);
     }
 
     public void ChooseAnswerMessage(string textAnswer)
     {
+        StartCoroutine(CoWaitShowUi(1f));
         textAnswerMessage.text = textAnswer;
         StartCoroutine(CoHidePhoneAnswers());
     }
 
     private IEnumerator CoHidePhoneAnswers()
     {
-        phonea
+        phoneAnswerPanel.GetComponent<Animator>().SetTrigger("hide");
         yield return new WaitForSeconds(timeHide);
+        phoneAnswerPanel.SetActive(false);
         answerMessage.SetActive(true);
-
     }
     #endregion
 

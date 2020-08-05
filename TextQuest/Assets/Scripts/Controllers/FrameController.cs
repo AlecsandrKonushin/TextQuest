@@ -19,9 +19,7 @@ public class FrameController : Singleton<FrameController>
     private int _counterFrames;
     private bool _endScene;
     private Dictionary<string, bool> InfluenceForGame = new Dictionary<string, bool>();
-
-    public bool PhoneMessage { get; private set; }
-
+    
     private void Start()
     {
         _currentPart = DataTexts.Instance.FirstPart;
@@ -30,7 +28,7 @@ public class FrameController : Singleton<FrameController>
 
     public void NextPoint()
     {
-        if (!UiReady || PhoneMessage)
+        if (!UiReady)
             return;
 
         if (_endScene)
@@ -66,19 +64,6 @@ public class FrameController : Singleton<FrameController>
         CurrentFrame.SetData();
     }
 
-    //private void PhoneMessageNow()
-    //{
-    //    PhoneMessage = true;
-    //    UiController.Instance.ShowPhoneAlert();
-    //}
-
-    //public void SetPhoneQuestion()
-    //{
-    //    FramePhone frame = _currentPart.Frames[_counterFrames] as FramePhone;
-    //    UiController.Instance.ShowPhonePanel(frame.Messages, frame.NameSender);
-    //    SetNextQuestion(frame);
-    //}
-
     private void ResetValueCounterScene()
     {
         _counterFrames = 0;
@@ -109,22 +94,21 @@ public class FrameController : Singleton<FrameController>
             InfluenceForGame.Add(answer.InfluenceForGame, answer.ValueInfluenceForGame);
         }
 
-        if (_currentPart.Frames[_counterFrames] is FrameAfterAnswer)
+        if (_currentPart.Frames[_counterFrames - 1] is FrameQuestion)
         {
 
-            if (_currentPart.Frames[_counterFrames - 1] is FrameQuestion)
-            {
-                FrameAfterAnswer frame = _currentPart.Frames[_counterFrames] as FrameAfterAnswer;
-                frame.Text = frame.AfterAnswers[numberButton];
-                frame.StateCharacter = frame.States[numberButton];
-                UiController.Instance.HideQuestions();
-                NextPoint();
-            }
-            else if(_currentPart.Frames[_counterFrames - 1] is FramePhone)
-            {
-                UiController.Instance.
-            }            
+            FrameAfterAnswer frame = _currentPart.Frames[_counterFrames] as FrameAfterAnswer;
+            frame.Text = frame.AfterAnswers[numberButton];
+            frame.StateCharacter = frame.States[numberButton];
+            UiController.Instance.HideQuestions();
+            NextPoint();
         }
+        else if (_currentPart.Frames[_counterFrames - 1] is FramePhone)
+        {
+            FramePhone frame = _currentPart.Frames[_counterFrames - 1] as FramePhone;
+            UiController.Instance.ChooseAnswerMessage(frame.Answers[numberButton].TextAnswer);
+        }
+
 
         TapController.Instance.CanTap = true;
     }
