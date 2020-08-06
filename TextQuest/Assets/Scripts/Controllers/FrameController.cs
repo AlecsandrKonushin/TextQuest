@@ -46,9 +46,12 @@ public class FrameController : Singleton<FrameController>
             StartCoroutine(CoHidePrevFrame());
         else
         {
-            StartCoroutine(UiController.Instance.CoWaitShowUi(.5f));
+            StartCoroutine(UiController.Instance.CoWaitShowUi(CurrentFrame.TimeWaitForNextClick));
             CurrentFrame.SetData();
         }
+
+        if (CurrentFrame is FrameAudio)
+            StartCoroutine(CoFrameAudioHide());
 
         _counterFrames++;
         if (_counterFrames >= _currentPart.Frames.Length)
@@ -57,11 +60,18 @@ public class FrameController : Singleton<FrameController>
 
     private IEnumerator CoHidePrevFrame()
     {
-        StartCoroutine(UiController.Instance.CoWaitShowUi(1f));
+        FrameGame frame = _currentPart.Frames[_counterFrames - 1];
+        StartCoroutine(UiController.Instance.CoWaitShowUi(frame.TimeHide + CurrentFrame.TimeWaitForNextClick));
         NewTypeFrame = true;
-        _currentPart.Frames[_counterFrames - 1].HideData();
-        yield return new WaitForSeconds(.5f);
+        frame.HideData();
+        yield return new WaitForSeconds(frame.TimeHide);
         CurrentFrame.SetData();
+    }
+
+    private IEnumerator CoFrameAudioHide()
+    {
+        yield return new WaitForSeconds(CurrentFrame.TimeHide);
+        CurrentFrame.HideData();
     }
 
     private void ResetValueCounterScene()
@@ -102,15 +112,13 @@ public class FrameController : Singleton<FrameController>
             frame.StateCharacter = frame.States[numberButton];
             UiController.Instance.HideQuestions();
             NextPoint();
+            TapController.Instance.CanTap = true;
         }
         else if (_currentPart.Frames[_counterFrames - 1] is FramePhone)
         {
             FramePhone frame = _currentPart.Frames[_counterFrames - 1] as FramePhone;
             UiController.Instance.ChooseAnswerMessage(frame.Answers[numberButton].TextAnswer);
         }
-
-
-        TapController.Instance.CanTap = true;
     }
 
 }

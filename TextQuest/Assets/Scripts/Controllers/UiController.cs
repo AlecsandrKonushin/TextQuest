@@ -273,6 +273,21 @@ public class UiController : Singleton<UiController>
         yield return new WaitForSeconds(timeHide);
         phoneAnswerPanel.SetActive(false);
         answerMessage.SetActive(true);
+        TapController.Instance.CanTap = true;
+    }
+
+    public void HidePhone()
+    {
+        StartCoroutine(CoHidePhone());
+    }
+
+    public IEnumerator CoHidePhone()
+    {
+        answerMessage.GetComponent<Animator>().SetTrigger("hide");
+        phonePanel.GetComponent<Animator>().SetTrigger("hide");
+        yield return new WaitForSeconds(1);
+        phonePanel.SetActive(false);
+        answerMessage.SetActive(false);
     }
     #endregion
 

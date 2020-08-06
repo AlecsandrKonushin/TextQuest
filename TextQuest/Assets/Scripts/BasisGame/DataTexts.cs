@@ -17,7 +17,7 @@ public class DataTexts : Singleton<DataTexts>
     private void CreateFirstPart()
     {
         FirstPart = new PartGame(1,
-            new FrameGame[11] {
+            new FrameGame[23] {
 
             new FrameNarrative(Characters[0], CharacterState.Smile, "Это был обычный летний день, когда почти все экзамены сданы, и можно немного расслабиться на перемене."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Я Джейк Сандерс, а это мои одноклассники и по совместительству лучшие друзья: Ханна, Лилла и Мэтью."),
@@ -35,7 +35,7 @@ public class DataTexts : Singleton<DataTexts>
                 new CharacterState[3]{ CharacterState.Smile, CharacterState.Smile, CharacterState.Hate}),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Ладно, какой у нас следующий урок?"),
             new FrameNarrative(Characters[2], CharacterState.Smile, "Вроде физика."),
-            new FrameNarrative(Characters[3], CharacterState.Smile, "Ээхх…. Еще есть 15 минут на свободе…"),
+            new FrameNarrative(Characters[3], CharacterState.Smile, "Ээхх... Еще есть 15 минут на свободе..."),
             new FrameAlertMessage(),
             new FramePhone(
                 new string[3]{
@@ -48,7 +48,21 @@ public class DataTexts : Singleton<DataTexts>
                     new Answer("Ок", Characters[4].name, 0),
                     new Answer("Хорошо, легкой тебе смены.", Characters[4].name, 1),
                     new Answer("Спасибо мам, увидимся.", Characters[4].name, 2)
-                })
+                }),
+            new FrameNarrative(Characters[2], CharacterState.Smile, "Джейк, ты не надумал к нам в команду?"),
+            new FrameNarrative(Characters[2], CharacterState.Smile, "Тренер передавал тебе привет, говорит, можно было бы сделать из тебя хорошего раннинбека, ведь ты быстро бегаешь."),
+            new FrameNarrative(Characters[0], CharacterState.Smile, "Нет Мэтью, спорт – это больше по твоей части."),
+            new FrameNarrative(Characters[0], CharacterState.Smile, "Бегаю я быстро, потому что все время опаздываю в школу и приходится топить на полную."),
+            new FrameNarrative(Characters[0], CharacterState.Smile, "Как только найдут замену учителя химии и снова откроют клуб «Алхимик», я бы продолжил ходить туда."),
+            new FrameNarrative(Characters[0], CharacterState.Smile, "Странно вообще, что так внезапно Джон Вайсман ушел, мне казалось ему нравится вести нам эти занятия..."),
+            new FrameNarrative(Characters[3], CharacterState.Smile, "У меня видение!"),
+            new FrameNarrative(Characters[3], CharacterState.Smile, "Уж очень теплая погода и хорошо сидим... А значит этому долго не бывать..."),
+            new FrameNarrative(Characters[3], CharacterState.Smile, "Вижу... Вижу... Предвижу, что сейчас ... прозвенит долбаный звонок!"),
+            new FrameAudio(),
+            new FrameNarrative(Characters[1], CharacterState.Smile, "Дааа, ты настоящий экстрасенс Лилла. Вставайте, пойдёмте на урок."),
+
+            new FrameNarrative(Characters[0], CharacterState.Smile, "last frame"),
+
 
 
             });
@@ -71,6 +85,8 @@ public abstract class FrameGame : MonoBehaviour
 {
     public abstract void SetData();
     public abstract void HideData();
+    public float TimeWaitForNextClick = .5f;
+    public float TimeHide = .5f;
 }
 
 public class FrameNarrative : FrameGame
@@ -225,9 +241,12 @@ public class FramePhone : FrameGame
         NameSender = nameSender;
         Answers = answers;
     }
-    
+
     public override void SetData()
     {
+        TimeHide = 1f;
+        TapController.Instance.CanTap = false;
+
         List<string> textsAnswers = new List<string>();
         foreach (var answer in Answers)
         {
@@ -240,6 +259,29 @@ public class FramePhone : FrameGame
 
     public override void HideData()
     {
+        UiController.Instance.HidePhone();
+    }
+}
+
+public class FrameAudio : FrameGame
+{
+    public FrameAudio()
+    {
+        TimeWaitForNextClick = 2.5f;
+        TimeHide = 2.5f;
+    }
+
+    public override void SetData()
+    {
+        TapController.Instance.CanTap = false;
+        AudioController.Instance.PlaySchoolBell();
+    }
+
+    public override void HideData()
+    {
+        Debug.Log("hide data");
+        FrameController.Instance.NextPoint();
+        TapController.Instance.CanTap = true;
     }
 }
 
