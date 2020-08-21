@@ -83,7 +83,7 @@ public class UiController : Singleton<UiController>
     private IEnumerator CoChangeNarrativeText(string text)
     {
         _animatorPanelNarrative.SetTrigger("hideText");
-        yield return new WaitForSeconds(timeHide);
+        yield return new WaitForSeconds(.25f);
         narrativeText.text = text;
         _animatorPanelNarrative.SetTrigger("showText");
     }
@@ -256,7 +256,7 @@ public class UiController : Singleton<UiController>
     public IEnumerator CoShowPhonePanel()
     {
         phonePanel.SetActive(true);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.15f);
         phoneAnswerPanel.SetActive(true);
     }
 
@@ -288,6 +288,7 @@ public class UiController : Singleton<UiController>
         yield return new WaitForSeconds(1);
         phonePanel.SetActive(false);
         answerMessage.SetActive(false);
+        DefaultSpriteButtonMessage();
     }
     #endregion
 

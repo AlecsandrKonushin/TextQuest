@@ -169,6 +169,7 @@ public class FrameQuestion : FrameNarrative
     public FrameQuestion(Character character, CharacterState state, string text, List<Answer> answers) : base(character, state, text)
     {
         Answers = answers;
+        TimeWaitForNextClick = 1f;
     }
 
     public override void SetData()
@@ -267,21 +268,19 @@ public class FrameAudio : FrameGame
 {
     public FrameAudio()
     {
-        TimeWaitForNextClick = 2.5f;
-        TimeHide = 2.5f;
+        TimeWaitForNextClick = 2f;
+        TimeHide = 0f;
     }
 
     public override void SetData()
     {
         TapController.Instance.CanTap = false;
         AudioController.Instance.PlaySchoolBell();
+        FrameController.Instance.NexfFrameAfterAudio(TimeWaitForNextClick);
     }
 
     public override void HideData()
     {
-        Debug.Log("hide data");
-        FrameController.Instance.NextPoint();
-        TapController.Instance.CanTap = true;
     }
 }
 

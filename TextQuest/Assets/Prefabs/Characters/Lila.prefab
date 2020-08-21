@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd29af2d862659f4d8dc1fc18109fc0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: Lila
+  Name: "\u041B\u0438\u043B\u0430"
   State: 0
   Sprite: {fileID: 21300000, guid: b814a4dc4e4169442b9e40e12e527bba, type: 3}
   SmileSprite: {fileID: 21300000, guid: b814a4dc4e4169442b9e40e12e527bba, type: 3}

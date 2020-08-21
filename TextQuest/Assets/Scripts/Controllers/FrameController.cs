@@ -121,4 +121,16 @@ public class FrameController : Singleton<FrameController>
         }
     }
 
+    public void NexfFrameAfterAudio(float time)
+    {
+        StartCoroutine(CoNextFrameAfterAudio(time));
+    }
+
+    private IEnumerator CoNextFrameAfterAudio(float time)
+    {
+        yield return new WaitForSeconds(time);
+        TapController.Instance.CanTap = true;
+        NextPoint();
+    }
+
 }
