@@ -42,6 +42,7 @@ public class FrameController : Singleton<FrameController>
         ReloadNarrative = false;
 
         CurrentFrame = _currentPart.Frames[_counterFrames];
+
         if (_counterFrames > 0 && _currentPart.Frames[_counterFrames - 1].GetType() != _currentPart.Frames[_counterFrames].GetType())
             StartCoroutine(CoHidePrevFrame());
         else
@@ -104,13 +105,13 @@ public class FrameController : Singleton<FrameController>
             InfluenceForGame.Add(answer.InfluenceForGame, answer.ValueInfluenceForGame);
         }
 
-        if (_currentPart.Frames[_counterFrames - 1] is FrameQuestion)
+        if (_currentPart.Frames[_counterFrames - 1] is FrameAnswer)
         {
 
             FrameAfterAnswer frame = _currentPart.Frames[_counterFrames] as FrameAfterAnswer;
             frame.Text = frame.AfterAnswers[numberButton];
             frame.StateCharacter = frame.States[numberButton];
-            UiController.Instance.HideQuestions();
+            UiController.Instance.HideAnswers();
             NextPoint();
             TapController.Instance.CanTap = true;
         }

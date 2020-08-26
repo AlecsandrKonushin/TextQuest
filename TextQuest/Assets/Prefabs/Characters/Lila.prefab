@@ -47,4 +47,5 @@ MonoBehaviour:
   State: 0
   Sprite: {fileID: 21300000, guid: b814a4dc4e4169442b9e40e12e527bba, type: 3}
   SmileSprite: {fileID: 21300000, guid: b814a4dc4e4169442b9e40e12e527bba, type: 3}
-  HateSprite: {fileID: 0}
+  HateSprite: {fileID: 21300000, guid: 6a6864646497f7041bb6a16b2321c1f1, type: 3}
+  ConfusedSprite: {fileID: 0}

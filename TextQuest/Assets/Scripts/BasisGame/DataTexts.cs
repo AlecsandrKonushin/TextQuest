@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DataTexts : Singleton<DataTexts>
 {
-    public Character[] Characters;
+    public Character[] Characters; // 0 - Джейк, 1 - Ханна, 2 - Метью, 3 - Лила, 4 - мама Джейка
     public PartGame FirstPart;
 
     public void Start()
@@ -17,13 +17,14 @@ public class DataTexts : Singleton<DataTexts>
     private void CreateFirstPart()
     {
         FirstPart = new PartGame(1,
-            new FrameGame[23] {
+            new FrameGame[33] {
 
             new FrameNarrative(Characters[0], CharacterState.Smile, "Это был обычный летний день, когда почти все экзамены сданы, и можно немного расслабиться на перемене."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Я Джейк Сандерс, а это мои одноклассники и по совместительству лучшие друзья: Ханна, Лилла и Мэтью."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Мы достаточно разные, но нам хорошо вместе и очень весело."),
             new FrameNarrative(Characters[1], CharacterState.Smile, "Джейк! Ты чего опять задумался?"),
-             new FrameQuestion(Characters[0], CharacterState.Smile, "А? Да я засмотрелся на этот одуванчик... он напоминает мне..." ,
+
+             new FrameAnswer(Characters[0], CharacterState.Smile, "А? Да я засмотрелся на этот одуванчик... он напоминает мне..." ,
                 new List<Answer>
                 {
                     new Answer( "Лужайку у дома, в котором мы жили летом у бабушки.", Characters[1].Name, 2, "treeChange", false ),
@@ -33,9 +34,11 @@ public class DataTexts : Singleton<DataTexts>
             new FrameAfterAnswer(Characters[1], CharacterState.Smile, "",
                 new string[3]{ "Я помню ее, она была очень доброй…", "Джейк, смотри на мир позитивнее.", "Ну ты гад! Это было ужасно!"},
                 new CharacterState[3]{ CharacterState.Smile, CharacterState.Smile, CharacterState.Hate}),
+
             new FrameNarrative(Characters[0], CharacterState.Smile, "Ладно, какой у нас следующий урок?"),
             new FrameNarrative(Characters[2], CharacterState.Smile, "Вроде физика."),
             new FrameNarrative(Characters[3], CharacterState.Smile, "Ээхх... Еще есть 15 минут на свободе..."),
+
             new FrameAlertMessage(),
             new FramePhone(
                 new string[3]{
@@ -49,6 +52,7 @@ public class DataTexts : Singleton<DataTexts>
                     new Answer("Хорошо, легкой тебе смены.", Characters[4].name, 1),
                     new Answer("Спасибо мам, увидимся.", Characters[4].name, 2)
                 }),
+
             new FrameNarrative(Characters[2], CharacterState.Smile, "Джейк, ты не надумал к нам в команду?"),
             new FrameNarrative(Characters[2], CharacterState.Smile, "Тренер передавал тебе привет, говорит, можно было бы сделать из тебя хорошего раннинбека, ведь ты быстро бегаешь."),
             new FrameNarrative(Characters[0], CharacterState.Smile, "Нет Мэтью, спорт – это больше по твоей части."),
@@ -60,8 +64,27 @@ public class DataTexts : Singleton<DataTexts>
             new FrameNarrative(Characters[3], CharacterState.Smile, "Вижу... Вижу... Предвижу, что сейчас ... прозвенит долбаный звонок!"),
             new FrameAudio(),
             new FrameNarrative(Characters[1], CharacterState.Smile, "Дааа, ты настоящий экстрасенс Лилла. Вставайте, пойдёмте на урок."),
+            new FrameBlackout("Несколько часов спустя", "ShollNight"),
+            new FrameNarrative(Characters[2], CharacterState.Smile, "Все, я побежал на тренировку, до завтра ребят!"),
+            new FrameNarrative(Characters[3], CharacterState.Hate, "Сегодня по расписанию я должна тусить с папашей, вот и он приехал..."),
+            new FrameNarrative(Characters[3], CharacterState.Hate, "С одной каторги на другую, блин. Не поминайте ребята, пока…"),
+            new FrameNarrative(Characters[1], CharacterState.Confused, "<<Джейк и Ханна неловко переглянулись>>"),
+            new FrameNarrative(Characters[0], CharacterState.Confused, ""),
+            new FrameNarrative(Characters[0], CharacterState.Smile, "Погода сегодня удалась, конечно!"),
+            new FrameNarrative(Characters[1], CharacterState.Smile, "Даа.. хочется просто закрыть глаза и лежать на траве.."),
 
-            new FrameNarrative(Characters[0], CharacterState.Smile, "last frame"),
+            new FrameAnswer(Characters[0], CharacterState.Smile, "Ханна..." ,
+                new List<Answer>
+                {
+                    new Answer( "Можем прогуляться, я провожу тебя.", Characters[1].Name, 1, "nightSchoolJakeHanna", true ),
+                    new Answer( "Ладно, я домой", Characters[1].Name, 0, "nightSchoolJakeHanna", false)
+                }),
+            new FrameAfterAnswer(Characters[1], CharacterState.Smile, "",
+                new string[2]{ "Отличный план, пошли через парк!", "До завтра, Джейк!"},
+                new CharacterState[2]{ CharacterState.Smile, CharacterState.Smile}),
+
+            new FrameBlackout("Конец первой части"),
+
 
 
 
@@ -162,11 +185,11 @@ public class FrameNarrative : FrameGame
     }
 }
 
-public class FrameQuestion : FrameNarrative
+public class FrameAnswer : FrameNarrative
 {
     public List<Answer> Answers;
 
-    public FrameQuestion(Character character, CharacterState state, string text, List<Answer> answers) : base(character, state, text)
+    public FrameAnswer(Character character, CharacterState state, string text, List<Answer> answers) : base(character, state, text)
     {
         Answers = answers;
         TimeWaitForNextClick = 1f;
@@ -183,7 +206,7 @@ public class FrameQuestion : FrameNarrative
         UiController uiCon = UiController.Instance;
         uiCon.HideSpeakingCharacter(false);
         uiCon.HideQuestionPanel();
-        uiCon.HideQuestions();
+        uiCon.HideAnswers();
     }
 
     private void SetNextQuestion()
@@ -196,7 +219,8 @@ public class FrameQuestion : FrameNarrative
         {
             variants.Add(question.TextAnswer);
         }
-        UiController.Instance.ShowQuestionText(variants);
+
+        UiController.Instance.ShowAnswerText(variants);
     }
 
     protected override void ShowPanel()
@@ -284,6 +308,33 @@ public class FrameAudio : FrameGame
     }
 }
 
+public class FrameBlackout : FrameGame
+{
+    protected string textBlackout;
+    protected string nameNextBg;
+
+    public FrameBlackout(string textBlackout, string nameNextBg = null)
+    {
+        TimeWaitForNextClick = 1f;
+        TimeHide = 2f;
+        this.textBlackout = textBlackout;
+        this.nameNextBg = nameNextBg;
+    }
+
+    public override void SetData()
+    {
+        UiController.Instance.ShowBlackoutPanel(textBlackout);
+    }
+
+    public override void HideData()
+    {
+        if (nameNextBg != null)
+            UiController.Instance.ChangeBgSprite(nameNextBg);
+
+        UiController.Instance.HideBlackoutPanel();
+    }
+}
+
 public class Answer
 {
     public string TextAnswer;
@@ -308,5 +359,6 @@ public class Answer
 public enum CharacterState
 {
     Smile,
-    Hate
+    Hate,
+    Confused
 }

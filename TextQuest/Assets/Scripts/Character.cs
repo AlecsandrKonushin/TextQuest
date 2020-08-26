@@ -8,6 +8,7 @@ public class Character : MonoBehaviour
     public Sprite Sprite;
     public Sprite SmileSprite;
     public Sprite HateSprite;
+    public Sprite ConfusedSprite;
 
     private Dictionary<string, int> Communications = new Dictionary<string, int>();
     
@@ -22,6 +23,8 @@ public class Character : MonoBehaviour
             Sprite = SmileSprite;
         else if (state == CharacterState.Hate)
             Sprite = HateSprite;
+        else if (state == CharacterState.Confused)
+            Sprite = ConfusedSprite;
     }
 
     public void ChangeCommunication(string characterName, int interaction)

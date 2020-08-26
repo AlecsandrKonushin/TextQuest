@@ -14,6 +14,11 @@ public class UiController : Singleton<UiController>
     [SerializeField] private GameObject pausePanel;
 
     [Space]
+    [Header("Bg sprite")]
+    [SerializeField] private Image bgImage;
+    [SerializeField] private Sprite[] bgSprites;
+
+    [Space]
     [Header("Narrative элементы")]
     [SerializeField] private Image bgNarrativePanel;
     [SerializeField] private Text narrativeText;
@@ -54,6 +59,10 @@ public class UiController : Singleton<UiController>
     [SerializeField] private Vector2 rightCharacterImage;
     [SerializeField] private Vector2 leftCharacterImage;
 
+    [Space]
+    [Header("Blackout panel")]
+    [SerializeField] private GameObject blackoutPanel;
+    [SerializeField] private Text blackoutText;
 
     public bool ClickButton = false;
     private Animator _animatorPanelNarrative;
@@ -65,6 +74,17 @@ public class UiController : Singleton<UiController>
         _animatorPanelNarrative = narrativePanel.GetComponent<Animator>();
         colorTextNarrative = narrativeText.color;
     }
+
+    #region
+    public void ChangeBgSprite(string nameBg)
+    {
+        foreach (var sprite in bgSprites)
+        {
+            if (sprite.name == nameBg)
+                bgImage.sprite = sprite;
+        }
+    }
+    #endregion
 
     #region Narrative panel
     public void ShowNarrativePanel(string text)
@@ -194,7 +214,7 @@ public class UiController : Singleton<UiController>
         }
     }
 
-    public void ShowQuestionText(List<string> variants)
+    public void ShowAnswerText(List<string> variants)
     {
         questionsPanel.SetActive(true);
 
@@ -205,12 +225,12 @@ public class UiController : Singleton<UiController>
         }
     }
 
-    public void HideQuestions()
+    public void HideAnswers()
     {
         narrativeQuestionPanel.SetActive(false);
-        foreach (var question in answerButtons)
+        foreach (var answer in answerButtons)
         {
-            question.gameObject.SetActive(false);
+            answer.gameObject.SetActive(false);
         }
     }
     #endregion
@@ -246,7 +266,7 @@ public class UiController : Singleton<UiController>
 
         for (int i = 0; i < answers.Count; i++)
         {
-            answerButtons[i].gameObject.SetActive(true);
+            phoneAnswerButtons[i].gameObject.SetActive(true);
             textsAnswerButtons[i].text = answers[i];
         }
 
@@ -272,6 +292,10 @@ public class UiController : Singleton<UiController>
         phoneAnswerPanel.GetComponent<Animator>().SetTrigger("hide");
         yield return new WaitForSeconds(timeHide);
         phoneAnswerPanel.SetActive(false);
+        foreach (var button in phoneAnswerButtons)
+        {
+            button.gameObject.SetActive(false);
+        }
         answerMessage.SetActive(true);
         TapController.Instance.CanTap = true;
     }
@@ -289,6 +313,26 @@ public class UiController : Singleton<UiController>
         phonePanel.SetActive(false);
         answerMessage.SetActive(false);
         DefaultSpriteButtonMessage();
+    }
+    #endregion
+
+    #region Blackout panel
+    public void ShowBlackoutPanel(string text)
+    {
+        blackoutText.text = text;
+        blackoutPanel.SetActive(true);
+    }
+
+    public void HideBlackoutPanel()
+    {
+        StartCoroutine(CoHideBlackoutPanel());
+    }
+
+    private IEnumerator CoHideBlackoutPanel()
+    {
+        blackoutPanel.GetComponent<Animator>().SetTrigger("hide");
+        yield return new WaitForSeconds(timeHide);
+        blackoutPanel.SetActive(false);
     }
     #endregion
 
